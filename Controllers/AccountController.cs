@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Appocal.Models;
+using Appocal.ViewModels;
 
 namespace Appocal.Controllers
 {
@@ -17,6 +18,12 @@ namespace Appocal.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+
+        [AllowAnonymous]
+        public PartialViewResult GetPartialView(string viewName)
+        {
+            return PartialView(viewName);
+        }
 
         public AccountController()
         {

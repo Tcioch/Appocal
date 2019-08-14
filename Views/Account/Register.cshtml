@@ -1,4 +1,4 @@
-﻿@model Appocal.Models.RegisterViewModel
+﻿@model Appocal.ViewModels.RegisterViewModel
 @{
     ViewBag.Title = "Zarejestruj";
 }
@@ -12,41 +12,48 @@
     <h5>Wybierz typ konta:</h5>
     <div class="btn-group btn-group-toggle" data-toggle="buttons">
         <label class="btn btn-primary active">
-            <input type="radio" name="userType" id="individual" autocomplete="off" checked />
+            <input type="radio" name="userType" value="IndividualForm" autocomplete="off" checked />
             Indywidualne
         </label>
         <label class="btn btn-primary">
-            <input type="radio" name="userType" id="business" autocomplete="off" />
+            <input type="radio" name="userType" value="BusinessForm" autocomplete="off" />
             Biznesowe
         </label>
     </div>
     <hr />
     @Html.ValidationSummary("", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-        </div>
+
+    <div id="registrationForm">
+        @Html.Partial("IndividualForm")
     </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" value="Zarejestruj" />
-        </div>
-    </div>
+
+   
 }
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(document).ready(function () {
+
+            $('input[type=radio][name=userType]').change(function () {
+                var url = '@Url.Action("GetPartialView", "Account")';
+                var partialView = this.value;
+                console.log(url);
+                console.log(partialView);
+                $.ajax({
+                    type: "POST",
+                    url: url + "?viewName=" + partialView
+                }).done(function (result) {
+                    $('#registrationForm').html(result);
+                }).fail(function (e) {
+                    console.log(e.responseText);
+                });
+            });
+
+
+
+        }); 
+    </script>
+
 }

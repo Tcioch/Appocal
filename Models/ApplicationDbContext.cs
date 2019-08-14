@@ -26,5 +26,7 @@ namespace Appocal.Models
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<Appocal.Models.ApplicationUser> ApplicationUsers { get; set; }
     }
 }

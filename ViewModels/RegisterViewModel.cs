@@ -1,8 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace Appocal.ViewModels
 {
-    public class RegisterViewModel
+    public abstract class RegisterViewModel
     {
         [Required]
         [EmailAddress]
@@ -19,6 +22,20 @@ namespace Appocal.ViewModels
         [Display(Name = "Potwierdź hasło")]
         [Compare("Password", ErrorMessage = "Hasło i jego potwierdzenie są niezgodne.")]
         public string ConfirmPassword { get; set; }
-        public string accountType { get; set; }
+        [Required]
+        public string AccountType
+        {
+            get
+            {
+                return AccountType;
+            }
+            set
+            {
+                if (AccountTypes.Any(s => s.Equals(value, StringComparison.OrdinalIgnoreCase)))
+                    AccountType = value;
+                else AccountType = "Individual";
+            }
+        }
+        private List<string> AccountTypes { get; set; } = new List<string>(){ "Individual", "Business" };
     }
 }

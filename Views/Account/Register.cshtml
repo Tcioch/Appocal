@@ -1,34 +1,25 @@
-﻿@model Appocal.ViewModels.RegisterViewModel
+﻿
 @{
     ViewBag.Title = "Zarejestruj";
 }
 
 <h2>@ViewBag.Title.</h2>
-
-@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-{
-    @Html.AntiForgeryToken()
-    <h4>Utwórz nowe konto.</h4>
-    <h5>Wybierz typ konta:</h5>
-    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label class="btn btn-primary active">
-            <input type="radio" name="userType" value="IndividualForm" autocomplete="off" checked />
-            Indywidualne
-        </label>
-        <label class="btn btn-primary">
-            <input type="radio" name="userType" value="BusinessForm" autocomplete="off" />
-            Biznesowe
-        </label>
-    </div>
-    <hr />
-    @Html.ValidationSummary("", new { @class = "text-danger" })
-
+<h4>Utwórz nowe konto.</h4>
+<h5>Wybierz typ konta:</h5>
+<div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn btn-primary active">
+        <input type="radio" name="userType" value="IndividualForm" autocomplete="off" checked />
+        Indywidualne
+    </label>
+    <label class="btn btn-primary">
+        <input type="radio" name="userType" value="BusinessForm" autocomplete="off" />
+        Biznesowe
+    </label>
+</div>
+<hr />
     <div id="registrationForm">
         @Html.Partial("IndividualForm")
     </div>
-
-   
-}
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
@@ -46,6 +37,7 @@
                     url: url + "?viewName=" + partialView
                 }).done(function (result) {
                     $('#registrationForm').html(result);
+                    $.validator.unobtrusive.parse('#registrationForm');
                 }).fail(function (e) {
                     console.log(e.responseText);
                 });
@@ -53,7 +45,7 @@
 
 
 
-        }); 
+        });
     </script>
 
 }

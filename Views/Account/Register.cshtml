@@ -1,4 +1,4 @@
-﻿
+﻿@model Appocal.ViewModels.RegisterViewModel
 @{
     ViewBag.Title = "Zarejestruj";
 }
@@ -8,17 +8,17 @@
 <h5>Wybierz typ konta:</h5>
 <div class="btn-group btn-group-toggle" data-toggle="buttons">
     <label class="btn btn-primary active">
-        <input type="radio" name="userType" value="IndividualForm" autocomplete="off" checked />
+        <input type="radio" name="userType" value="IndividualForm" autocomplete="off" @(Model.AccountType == "Individual" ? "checked" : "") />
         Indywidualne
     </label>
     <label class="btn btn-primary">
-        <input type="radio" name="userType" value="BusinessForm" autocomplete="off" />
+        <input type="radio" name="userType" value="BusinessForm" autocomplete="off" @(Model.AccountType == "Business" ? "checked" : "")/>
         Biznesowe
     </label>
 </div>
 <hr />
     <div id="registrationForm">
-        @Html.Partial("IndividualForm")
+        @Html.Partial(Model.AccountType + "Form", Model)
     </div>
 
 @section Scripts {

@@ -23,17 +23,18 @@ namespace Appocal.ViewModels
         [Compare("Password", ErrorMessage = "Hasło i jego potwierdzenie są niezgodne.")]
         public string ConfirmPassword { get; set; }
         [Required]
+        protected string _accountType;
         public string AccountType
         {
             get
             {
-                return AccountType;
+                return _accountType;
             }
             set
             {
                 if (AccountTypes.Any(s => s.Equals(value, StringComparison.OrdinalIgnoreCase)))
-                    AccountType = value;
-                else AccountType = "Individual";
+                    _accountType = value;
+                else _accountType = "Individual";
             }
         }
         private List<string> AccountTypes { get; set; } = new List<string>(){ "Individual", "Business" };

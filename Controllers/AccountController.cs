@@ -146,7 +146,8 @@ namespace Appocal.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
-            return View();
+            var model = new IndividualRegisterViewModel();
+            return View(model);
         }
 
         //
@@ -154,11 +155,12 @@ namespace Appocal.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(IndividualRegisterViewModel model)
+        public async Task<ActionResult> RegisterIndividual(IndividualRegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
+                Schedule schedule = new Schedule();
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Schedule = schedule};
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -176,7 +178,7 @@ namespace Appocal.Controllers
             }
 
             // Dotarcie do tego miejsca wskazuje, że wystąpił błąd, wyświetl ponownie formularz
-            return View(model);
+            return View("Register", model);
         }
 
         //
@@ -208,7 +210,7 @@ namespace Appocal.Controllers
             }
 
             // Dotarcie do tego miejsca wskazuje, że wystąpił błąd, wyświetl ponownie formularz
-            return View("register", model);
+            return View("Register", model);
         }
 
         //

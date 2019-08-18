@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Appocal.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,6 +9,12 @@ namespace Appocal.Controllers
 {
     public class HomeController : Controller
     {
+        public ActionResult Calendar()
+        {
+            CalendarViewModel model = new CalendarViewModel(9, 2019);
+            return View(model);
+        }
+
         public ActionResult Index()
         {
             return View();

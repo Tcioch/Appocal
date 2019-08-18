@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Appocal.Models;
+using Appocal.ViewModels;
 
 namespace Appocal.Controllers
 {
@@ -17,6 +18,12 @@ namespace Appocal.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+
+        [AllowAnonymous]
+        public PartialViewResult GetPartialView(string viewName)
+        {
+            return PartialView(viewName);
+        }
 
         public AccountController()
         {
@@ -139,7 +146,8 @@ namespace Appocal.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
-            return View();
+            var model = new IndividualRegisterViewModel();
+            return View(model);
         }
 
         //
@@ -147,16 +155,17 @@ namespace Appocal.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> RegisterIndividual(IndividualRegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                Schedule schedule = new Schedule();
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Schedule = schedule};
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
                     // Aby uzyskać więcej informacji o sposobie włączania potwierdzania konta i resetowaniu hasła, odwiedź stronę https://go.microsoft.com/fwlink/?LinkID=320771
                     // Wyślij wiadomość e-mail z tym łączem
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
@@ -169,7 +178,39 @@ namespace Appocal.Controllers
             }
 
             // Dotarcie do tego miejsca wskazuje, że wystąpił błąd, wyświetl ponownie formularz
-            return View(model);
+            return View("Register", model);
+        }
+
+        //
+        // POST: /Account/RegisterBusiness
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RegisterBusiness(BusinessRegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.BusinessName, Email = model.Email,
+                Business = new Business() { Name = model.BusinessName }
+                };
+                var result = await UserManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
+                    // Aby uzyskać więcej informacji o sposobie włączania potwierdzania konta i resetowaniu hasła, odwiedź stronę https://go.microsoft.com/fwlink/?LinkID=320771
+                    // Wyślij wiadomość e-mail z tym łączem
+                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    // await UserManager.SendEmailAsync(user.Id, "Potwierdź konto", "Potwierdź konto, klikając <a href=\"" + callbackUrl + "\">tutaj</a>");
+
+                    return RedirectToAction("Index", "Home");
+                }
+                AddErrors(result);
+            }
+
+            // Dotarcie do tego miejsca wskazuje, że wystąpił błąd, wyświetl ponownie formularz
+            return View("Register", model);
         }
 
         //

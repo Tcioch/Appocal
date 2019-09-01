@@ -1,0 +1,66 @@
+﻿@model Appocal.ViewModels.WorkTimeViewModel
+@{
+    ViewBag.Title = "Add new time";
+}
+
+<h2>Dodaj nowy czas pracy</h2>
+@using (Html.BeginForm("SaveWorkTime","Calendar"))
+{
+    @ViewBag.SuccessMessage
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+<div class="container">
+    <div>
+        <label>Data i godzina rozpoczęcia pracy:</label>
+        <div class="col-sm-6">
+            @Html.TextBoxFor(m => m.AppointmentDate, new { @class = "form-control datetimepicker-input", id = "dateTimeWorkStart", data_toggle = "datetimepicker", data_target = "#dateTimeWorkStart" })
+        </div>
+    </div>
+    <div>
+        <label>Godzina zakończenia pracy:</label>
+        <div class="col-sm-6">
+            @Html.TextBoxFor(m => m.AppointmentEndDate, new { @class = "form-control datetimepicker-input", id = "timeWorkEnd", data_toggle = "datetimepicker", data_target = "#timeWorkEnd" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Powtarzaj</label>
+        @Html.DropDownListFor(m => m.Repeat,
+                            new SelectList(Model.RepeatOptions, "Value", "Desc"),
+                            new { @class = "form-control mx-3", id = "selectRepeat" })
+        <div id="periodOfTime" class="my-2" hidden>
+            przez
+            @Html.DropDownListFor(m => m.TimePeriodToRepeat,
+                            new SelectList(Model.TimePeriodOptions, "Value", "Desc", "tydzień"),
+                            new { @class = "form-control mx-3 my-2", id = "selectPeriodOfTime" })
+        </div>
+    </div>
+    @Html.HiddenFor(m => m.Id)
+    <button type="submit" class="btn btn-primary">Dodaj nowy czas pracy</button>
+</div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/dateTimePicker")
+    <script>
+        $(document).ready(function () {
+
+            $(function () {
+                $('#dateTimeWorkStart').datetimepicker({
+                    locale: 'pl',
+                    minDate: moment()
+
+                });
+                $('#timeWorkEnd').datetimepicker({
+                    format: 'LT',
+                    locale: 'pl'
+                });
+            });
+
+            $('#selectRepeat').on('change', function () {
+                if (this.value != 0)
+                    $("#periodOfTime").removeAttr("hidden");
+                else
+                    $("#periodOfTime").attr("hidden", true);
+            });
+        });
+    </script>
+}

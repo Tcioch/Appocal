@@ -1,0 +1,12 @@
+﻿@model Appocal.ViewModels.CalendarViewModel
+
+@{
+    ViewBag.Title = "Calendar";
+}
+
+<h2>Calendar</h2>
+@Html.ActionLink("Dodaj nowy czas pracy", "AddNewTime", "Calendar", null, new { @class="btn btn-primary ml-3"})
+
+<div class="col-6 mt-2">
+    @Html.Raw(Model.DrawCalendar())
+</div>

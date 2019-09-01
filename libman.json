@@ -1,0 +1,29 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "twitter-bootstrap@4.3.1",
+      "destination": "Content/bootstrap/"
+    },
+    {
+      "library": "moment.js@2.24.0",
+      "destination": "Content/moment/",
+      "files": [
+        "moment.min.js",
+        "moment.js",
+        "moment-with-locales.min.js",
+        "moment-with-locales.js",
+        "locale/pl.js"
+      ]
+    },
+    {
+      "library": "tempusdominus-bootstrap-4@5.1.2",
+      "destination": "Content/tempusdominus/"
+    },
+    {
+      "library": "font-awesome@5.10.2",
+      "destination": "Content/font-awesome/"
+    }
+  ]
+}

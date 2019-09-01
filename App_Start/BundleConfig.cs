@@ -20,11 +20,17 @@ namespace Appocal
                         "~/Scripts/modernizr-*"));
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.js"));
+                      "~/Content/bootstrap/js/bootstrap.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/dateTimePicker").Include(
+                "~/Content/moment/moment-with-locales.js",
+                "~/Content/tempusdominus/js/tempusdominus-bootstrap-4.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/bootstrap/css/bootstrap.css",
+                     "~/Content/site.css",
+                     "~/Content/tempusdominus/css/tempusdominus-bootstrap-4.css",
+                     "~/Content/font-awesome/css/all.css"));
         }
     }
 }

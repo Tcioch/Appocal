@@ -49,9 +49,8 @@ namespace Appocal.ViewModels
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "Adres e-mail")]
-        [EmailAddress]
-        public string Email { get; set; }
+        [Display(Name = "Nazwa użytkownika lub firmy")]
+        public string Name { get; set; }
 
         [Required]
         [DataType(DataType.Password)]

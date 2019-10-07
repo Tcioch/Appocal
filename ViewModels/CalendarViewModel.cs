@@ -1,20 +1,26 @@
-﻿using Microsoft.Ajax.Utilities;
+﻿using Appocal.Models;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Appocal.ViewModels
 {
     public class CalendarViewModel
     {
+        public DateTime firstDay { get; set; }
         public int FirstDayOfMonth { get; set; }
         public int NumberOfRows { get; set; }
         public int NumberOfDays { get; set; }
+        public List<Appointment> Appointments { get; set; }
 
-        public CalendarViewModel(int month, int year)
+        public CalendarViewModel(int month, int year, List<Appointment> appointments)
         {
-            DateTime date = new DateTime(year, month , 1);
+            DateTime date = new DateTime(year, month, 1);
+            firstDay = date;
             FirstDayOfMonth = (int)date.DayOfWeek;
             NumberOfDays = DateTime.DaysInMonth(year, month);
             NumberOfRows = CalculateNumberOfRows();
+            Appointments = appointments;
         }
 
         private int CalculateNumberOfRows()
@@ -42,16 +48,32 @@ namespace Appocal.ViewModels
             int rowInCalendar = 1;
             while (rowInCalendar <= NumberOfRows)
             {
+                            
                 ReturnString += "<tr>";
                 if (rowInCalendar == 1)
                 {
                     for (int i = 1; i <= 7; i++)
                     {
+                        string appDate = firstDay.Year.ToString() + firstDay.Month.ToString().PadLeft(2, '0') + dayInCalendar.ToString().PadLeft(2, '0');
                         if (i < FirstDayOfMonth)
                             ReturnString += "<th></th>";
                         else
                         {
-                            ReturnString += $"<th>{dayInCalendar}</th>";
+                            string htmlInCell;
+                            if (Appointments.Any(a => a.AppointmentDate.Day == dayInCalendar))
+                            {
+                                if (Appointments.Any(a => a.Available == false) && Appointments.Any(a => a.Available == true))
+                                    htmlInCell = $"<a href='#' class='btn btn-warning w-100' appDate='{appDate}'>{dayInCalendar}</a>";
+                                else if (Appointments.Any(a => a.Available == false) && !Appointments.Any(a => a.Available == true))
+                                    htmlInCell = $"<a href='#' class='btn btn-danger w-100' appDate='{appDate}'>{dayInCalendar}</a>";
+                                else
+                                    htmlInCell = $"<a href='#' class='btn btn-success w-100' appDate='{appDate}'>{dayInCalendar}</a>";
+                            }
+                            else
+                            {
+                                htmlInCell = $"<a class='btn btn-secondary w-100 disabled'>{dayInCalendar}</a>";
+                            }
+                            ReturnString += $"<td>{htmlInCell}</td>";
                             dayInCalendar++;
                         }
                     }
@@ -60,7 +82,22 @@ namespace Appocal.ViewModels
                 {
                     for (int i = 1; i <= 7; i++)
                     {
-                        ReturnString += $"<th>{dayInCalendar}</th>";
+                        string appDate = firstDay.Year.ToString() + firstDay.Month.ToString().PadLeft(2, '0') + dayInCalendar.ToString().PadLeft(2, '0');
+                        string htmlInCell;
+                        if (Appointments.Any(a => a.AppointmentDate.Day == dayInCalendar))
+                        {
+                            if (Appointments.Any(a => a.Available == false) && Appointments.Any(a => a.Available == true))
+                                htmlInCell = $"<a href='#' class='btn btn-warning w-100' appDate='{appDate}'>{dayInCalendar}</a>";
+                            else if (Appointments.Any(a => a.Available == false) && !Appointments.Any(a => a.Available == true))
+                                htmlInCell = $"<a href='#' class='btn btn-danger w-100' appDate='{appDate}'>{dayInCalendar}</a>";
+                            else
+                                htmlInCell = $"<a href='#' class='btn btn-success w-100' appDate='{appDate}'>{dayInCalendar}</a>";
+                        }
+                        else
+                        {
+                            htmlInCell = $"<a class='btn btn-secondary w-100 disabled'>{dayInCalendar}</a>";
+                        }
+                        ReturnString += $"<td>{htmlInCell}</td>";
                         dayInCalendar++;
                         if (dayInCalendar > NumberOfDays) break;
                     }

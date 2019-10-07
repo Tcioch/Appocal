@@ -1,7 +1,7 @@
-﻿using Antlr.Runtime.Misc;
-using Appocal.Models;
+﻿using Appocal.Models;
 using Appocal.ViewModels;
 using Microsoft.AspNet.Identity;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
@@ -24,7 +24,10 @@ namespace Appocal.Controllers
 
         public ActionResult Index()
         {
-            CalendarViewModel model = new CalendarViewModel(9, 2019);
+            var userId = HttpContext.User.Identity.GetUserId();
+            List<Appointment> appointmentsInDisplayedMonth = _contex.Users.Include(u => u.Business.Schedule.Appointments)
+                                                                          .Single(u => u.Id == userId).Business.Schedule.Appointments.Where(a => a.AppointmentDate.Month == 9).ToList();
+            CalendarViewModel model = new CalendarViewModel(9, 2019, appointmentsInDisplayedMonth);
             return View("Calendar", model);
         }
 

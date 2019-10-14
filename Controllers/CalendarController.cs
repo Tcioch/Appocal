@@ -24,11 +24,7 @@ namespace Appocal.Controllers
 
         public ActionResult Index()
         {
-            var userId = HttpContext.User.Identity.GetUserId();
-            List<Appointment> appointmentsInDisplayedMonth = _contex.Users.Include(u => u.Business.Schedule.Appointments)
-                                                                          .Single(u => u.Id == userId).Business.Schedule.Appointments.Where(a => a.AppointmentDate.Month == 9).ToList();
-            CalendarViewModel model = new CalendarViewModel(9, 2019, appointmentsInDisplayedMonth);
-            return View("Calendar", model);
+            return View("Calendar");
         }
 
         public ActionResult AddNewTime()

@@ -192,7 +192,12 @@ namespace Appocal.Controllers
             if (ModelState.IsValid)
             {
                 Schedule schedule = new Schedule();
-                Business business = new Business() { Name = model.BusinessName, Schedule = new Schedule() };
+                Business business = new Business()
+                {
+                    Name = model.BusinessName,
+                    Schedule = new Schedule(),
+                    BusinessPage = new BusinessPage { PageContent = new PageContent() }
+                };
                 var user = new ApplicationUser { UserName = model.BusinessName, Email = model.Email, Business = business };
               
                 var result = await UserManager.CreateAsync(user, model.Password);

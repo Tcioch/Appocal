@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Appocal.Models;
 using Appocal.ViewModels;
+using System.Web.Security;
 
 namespace Appocal.Controllers
 {
@@ -82,7 +83,7 @@ namespace Appocal.Controllers
 
             // Nie powoduje to liczenia niepowodzeń logowania w celu zablokowania konta
             // Aby włączyć wyzwalanie blokady konta po określonej liczbie niepomyślnych prób wprowadzenia hasła, zmień ustawienie na shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(model.Name, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -165,7 +166,7 @@ namespace Appocal.Controllers
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-
+                    Roles.AddUserToRole(model.UserName, "Individual");
                     // Aby uzyskać więcej informacji o sposobie włączania potwierdzania konta i resetowaniu hasła, odwiedź stronę https://go.microsoft.com/fwlink/?LinkID=320771
                     // Wyślij wiadomość e-mail z tym łączem
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
@@ -190,14 +191,21 @@ namespace Appocal.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.BusinessName, Email = model.Email,
-                Business = new Business() { Name = model.BusinessName }
+                Schedule schedule = new Schedule();
+                Business business = new Business()
+                {
+                    Name = model.BusinessName,
+                    Schedule = new Schedule(),
+                    BusinessPage = new BusinessPage { PageContent = new PageContent() }
                 };
+                var user = new ApplicationUser { UserName = model.BusinessName, Email = model.Email, Business = business };
+              
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    var currentUser = UserManager.FindByName(user.UserName);
+                    UserManager.AddToRole(currentUser.Id, "Business");
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-
                     // Aby uzyskać więcej informacji o sposobie włączania potwierdzania konta i resetowaniu hasła, odwiedź stronę https://go.microsoft.com/fwlink/?LinkID=320771
                     // Wyślij wiadomość e-mail z tym łączem
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);

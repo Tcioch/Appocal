@@ -1,0 +1,241 @@
+﻿
+@{
+    ViewBag.Title = "Calendar";
+}
+
+<h2>Calendar</h2>
+@Html.ActionLink("Dodaj nowy czas pracy", "AddNewTime", "Calendar", null, new { @class = "btn btn-primary ml-3" })
+
+<div id="calendar" class="col-6 mt-2">
+</div>
+<div>
+    <table id="appoTable" class="table table-bordered table-hover" hidden>
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Godzina rozpoczęcia</th>
+                <th>Czas trwania</th>
+                <th>Godzina zakończenia</th>
+                <th>Dostępny</th>
+                <th>Klient</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+
+        var table = $("#appoTable").DataTable({
+            data: [],
+            columns: [
+                {
+                    data: "AppointmentDate",
+                    render: function (data) {
+                        var dateString = moment(data).format("DD.MM.YYYY");
+                        return dateString;
+                    }
+                },
+                {
+                    data: "AppointmentDate",
+                    render: function (data) {
+                        var dateString = moment(data).format("HH:mm");
+                        return dateString;
+                    }
+                },
+                {
+                    data: "Duration",
+                    render: function (data) {
+                        return data + " min.";
+                    }
+                },
+                {
+                    data: "AppointmentDate",
+                    render: function (data, type, appoitment) {
+                        var dateString = moment(data).add(appoitment.Duration, "m").format("HH:mm");
+                        return dateString;
+                    }
+                },
+                {
+                    data: "Available",
+                    render: function (data) {
+                        if (data == true) return "Tak";
+                        else return "Nie";
+                    }
+                },
+                {
+                    data: "Client",
+                    render: function (data) {
+                        if (data == null) return "-";
+                        else return data;
+                    }
+                },
+                {
+                    data: "IsConfirmed",
+                    render: function (data, type, appointment) {
+                        if (appointment.Client == null) return "-";
+                        else {
+                            if (data == "true") return "Potwierdzony";
+                            else return "Niepotwierdzony";
+                        }
+                    }
+                }
+            ],
+            //rowCallback: function (row, data) { },
+            filter: false,
+            info: false,
+            paging: false,
+            lengthChange: false,
+            ordering: false,
+            processing: true,
+            retrieve: true
+        });
+
+        $(document).ready(function () {
+            var nowMonth = new Date().getMonth() + 1;
+            var nowYear = new Date().getFullYear();
+            drawCalendar(nowMonth, nowYear);
+
+            $('#calendar').on('click', 'a[appdate]', function () {
+                $('#appoTable').removeAttr('hidden');
+                var date = $(this).attr("appdate")
+
+                $.ajax({
+                    url: "/api/appointments",
+                    type: "GET",
+                    data: { date: date }
+                }).done(function (result) {
+                    table.clear().draw();
+                    table.rows.add(result).draw();
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    // needs to implement if it fails
+                });
+            });
+        });
+
+        function drawCalendar(month, year) {
+            table.clear().draw();
+            $('#appoTable').attr("hidden", true);
+            var arrayOfDaysWithAppo;
+            previousMonthYear = year
+            previousMonth = month - 1;
+            nextMonthYear = year;
+            nextMonth = month + 1;
+            if (month == 1) {
+                previousMonth = 12;
+                previousMonthYear = year - 1;
+            }
+            if (month == 12) {
+                nextMonth = 1;
+                nextMonthYear = year + 1;
+            }
+
+            $.ajax({
+                url: "/api/calendar",
+                async: false,
+                type: "GET",
+                data: {
+                    month: month,
+                    year: year
+                }
+            }).done(function (result) {
+                arrayOfDaysWithAppo = result;
+
+            })
+            var htmlToDraw = "";
+            htmlToDraw += "<table class='table table-bordered text-center'>" +
+                "<tr>" +
+                `<th scope='col' onclick='drawCalendar(${previousMonth},${previousMonthYear})' style='cursor: pointer'><i class='fas fa-chevron-left'></i></th>` +
+                "<th scope='col' colspan='5'>";
+
+            var monthNames = ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec",
+                "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"];
+            htmlToDraw += monthNames[month - 1] + " " + year;
+
+            htmlToDraw += "</th>" +
+                `<th scope='col' onclick='drawCalendar(${nextMonth},${nextMonthYear})' style='cursor: pointer'><i class='fas fa-chevron-right'></i></th>` +
+                "</tr>" +
+                "<tr>" +
+                "<th scope='col'>Pon</th>" +
+                "<th scope='col'>Wt</th>" +
+                "<th scope='col'>Śr</th>" +
+                "<th scope='col'>Czw</th>" +
+                "<th scope='col'>Pt</th>" +
+                "<th scope='col'>Sb</th>" +
+                "<th scope='col'>Nd</th>" +
+                "</tr>";
+
+            var date = new Date(year + "-" + month + "-" + "01");
+            var numberOfDaysInMonth = new Date(year, month, 0).getDate();
+            var firstDayOfMonth = date.getDay();
+
+            if (firstDayOfMonth == 0)
+                firstDayOfMonth = 7;
+            var fieldsInCalendar = numberOfDaysInMonth + (firstDayOfMonth - 1);
+            var numberOfRows = Math.ceil(fieldsInCalendar / 7);
+
+            var dayInCalendar = 1;
+            var rowInCalendar = 1;
+            while (rowInCalendar <= numberOfRows) {
+                htmlToDraw += "<tr>";
+                if (rowInCalendar == 1) {
+                    for (i = 1; i <= 7; i++) {
+                        var month2digit = ("0" + (date.getMonth() + 1)).slice(-2);
+                        var day2digit = ("0" + dayInCalendar).slice(-2);
+                        var appDate = String(date.getFullYear()) + month2digit + day2digit;
+
+                        if (i < firstDayOfMonth)
+                            htmlToDraw += "<th></th>";
+                        else {
+                            var htmlInCell;
+                            if (arrayOfDaysWithAppo.some(a => a.Day == dayInCalendar)) {
+                                if (arrayOfDaysWithAppo.find(a => a.Day == dayInCalendar).Status == "PartlyBooked")
+                                    htmlInCell = `<a href='#' class='btn btn-warning w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                                else if (arrayOfDaysWithAppo.find(a => a.Day == dayInCalendar).Status == "FullyBooked")
+                                    htmlInCell = `<a href='#' class='btn btn-danger w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                                else
+                                    htmlInCell = `<a href='#' class='btn btn-success w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                            }
+                            else {
+                                htmlInCell = `<a class='btn btn-secondary w-100 disabled'>${dayInCalendar}</a>`;
+                            }
+                            htmlToDraw += `<td>${htmlInCell}</td>`;
+                            dayInCalendar++;
+                        }
+                    }
+                }
+                else {
+                    for (i = 1; i <= 7; i++) {
+                        var month2digit = ("0" + (date.getMonth() + 1)).slice(-2);
+                        var day2digit = ("0" + dayInCalendar).slice(-2);
+                        var appDate = String(date.getFullYear()) + month2digit + day2digit;
+
+                        var htmlInCell;
+                        if (arrayOfDaysWithAppo.some(a => a.Day == dayInCalendar)) {
+                            if (arrayOfDaysWithAppo.find(a => a.Day == dayInCalendar).Status == "PartlyBooked")
+                                htmlInCell = `<a href='#' class='btn btn-warning w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                            else if (arrayOfDaysWithAppo.find(a => a.Day == dayInCalendar).Status == "FullyBooked")
+                                htmlInCell = `<a href='#' class='btn btn-danger w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                            else
+                                htmlInCell = `<a href='#' class='btn btn-success w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                        }
+                        else {
+                            htmlInCell = `<a class='btn btn-secondary w-100 disabled'>${dayInCalendar}</a>`;
+                        }
+                        htmlToDraw += `<td>${htmlInCell}</td>`;
+                        dayInCalendar++;
+                        if (dayInCalendar > numberOfDaysInMonth) break;
+                    }
+                }
+                htmlToDraw += "</tr>";
+                rowInCalendar++;
+            }
+            htmlToDraw += "</table>";
+
+            $("#calendar").html(htmlToDraw);
+        }
+    </script>
+}

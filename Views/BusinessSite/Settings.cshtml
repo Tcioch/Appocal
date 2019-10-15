@@ -4,6 +4,8 @@
 }
 
 <h2>Ustawienia</h2>
+@Html.ActionLink("Zobacz swoją stronę", User.Identity.Name, "Site", new { }, new { @class = "btn btn-primary ml-3" })
+
 @using (Html.BeginForm("ChangeSettings", "BusinessSite"))
 {
     @ViewBag.SuccessMessage

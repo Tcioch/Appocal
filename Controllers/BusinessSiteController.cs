@@ -1,6 +1,7 @@
 ﻿using Appocal.Models;
 using Appocal.ViewModels;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -30,6 +31,19 @@ namespace Appocal.Controllers
             return View();
         }
 
+        public ActionResult Show(string name)
+        {
+            var business = _contex.Users.SingleOrDefault(u => u.UserName == name);
+
+            if (business == null)
+                return RedirectToAction("Index", "Home");
+
+            var businessId = business.Id;
+            var model = getBusinessDescriptionViewModel(businessId);
+            return View(model);
+        }
+
+        [Authorize(Roles = "Business")]
         public ActionResult Settings()
         {
             var userId = HttpContext.User.Identity.GetUserId();
@@ -37,6 +51,8 @@ namespace Appocal.Controllers
             return View(model);
         }
 
+
+        [Authorize(Roles = "Business")]
         public ActionResult ChangeSettings(BusinessDescriptionViewModel model)
         {
             if (!ModelState.IsValid)

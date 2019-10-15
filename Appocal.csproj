@@ -731,6 +731,7 @@
     <Content Include="Views\Calendar\AddNewTime.cshtml" />
     <Content Include="Views\Shared\_Navbar.cshtml" />
     <Content Include="Views\BusinessSite\Settings.cshtml" />
+    <Content Include="Views\BusinessSite\Show.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

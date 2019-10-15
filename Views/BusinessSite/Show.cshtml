@@ -3,4 +3,6 @@
     ViewBag.Title = "Ustawienia";
 }
 
-    <h2>@Model.Name</h2>
+    <h1>@Model.Name</h1>
+
+    @Html.Raw(Model.Content)

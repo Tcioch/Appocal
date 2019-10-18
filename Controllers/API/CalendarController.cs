@@ -3,7 +3,6 @@ using Appocal.Models;
 using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
@@ -25,9 +24,17 @@ namespace Appocal.Controllers.API
         }
 
         [Authorize(Roles = "Business, Individual")]
-        public IHttpActionResult GetDaysInMonthWithAppointments(int month, int year)
+        public IHttpActionResult GetDaysInMonthWithAppointments(int month, int year, string businessName = null)
         {
-            var userId = HttpContext.Current.User.Identity.GetUserId();
+            string userId;
+            if (businessName == null)
+                userId = HttpContext.Current.User.Identity.GetUserId();
+            else
+            {
+                var business = _contex.Users.SingleOrDefault(u => u.UserName == businessName);
+                userId = business.Id;
+            }
+
             List<Appointment> appointmentsInDisplayedMonth = _contex.Users.Include(u => u.Business.Schedule.Appointments)
                                                                           .Single(u => u.Id == userId).Business.Schedule.Appointments
                                                                           .Where(a => a.AppointmentDate.Month == month && a.AppointmentDate.Year == year)
@@ -52,7 +59,5 @@ namespace Appocal.Controllers.API
             }
             return Ok(daysInMonth);
         }
-
-        
     }
 }

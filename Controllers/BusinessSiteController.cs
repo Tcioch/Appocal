@@ -40,6 +40,19 @@ namespace Appocal.Controllers
 
             var businessId = business.Id;
             var model = getBusinessDescriptionViewModel(businessId);
+
+            var userId = HttpContext.User.Identity.GetUserId();
+            if (userId == businessId)
+            return View("BusinessSiteOwner", model);
+            else
+            return View(model);
+        }
+
+        [Authorize(Roles = "Business")]
+        public ActionResult Services()
+        {
+            var userId = HttpContext.User.Identity.GetUserId();
+            var model = new BusinessServicesViewModel(userId);
             return View(model);
         }
 

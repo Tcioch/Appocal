@@ -126,3 +126,4 @@ C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migration
 C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.csproj.GenerateResource.cache
 C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.Add_models.resources
 C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.update_users.resources
+C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.Servies.resources

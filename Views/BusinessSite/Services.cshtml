@@ -1,0 +1,10 @@
+﻿@model Appocal.ViewModels.BusinessServicesViewModel
+@{
+    ViewBag.Title = "Usługi";
+}
+
+@foreach (var service in Model.Services)
+{
+    @service.Name
+    @service.Duration
+}

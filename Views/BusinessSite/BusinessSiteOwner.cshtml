@@ -1,0 +1,166 @@
+﻿@model Appocal.ViewModels.BusinessDescriptionViewModel
+@{
+    ViewBag.Title = "Ustawienia";
+}
+
+<h1>@Model.Name</h1>
+<div class="containter">
+    <div class="row">
+        <div class="col-md-8">
+            @Html.Raw(Model.Content)
+        </div>
+        <div id="calendar" class="col-md-4 mt-2">
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var nowMonth = new Date().getMonth() + 1;
+        var nowYear = new Date().getFullYear();
+        var nowDay = new Date().getDate();
+
+        $(document).ready(function () {
+
+            drawCalendar(nowMonth, nowYear);
+        });
+
+        function drawCalendar(month, year) {
+            var arrayOfDaysWithAppo;
+            previousMonthYear = year
+            previousMonth = month - 1;
+            nextMonthYear = year;
+            nextMonth = month + 1;
+            if (month == 1) {
+                previousMonth = 12;
+                previousMonthYear = year - 1;
+            }
+            if (month == 12) {
+                nextMonth = 1;
+                nextMonthYear = year + 1;
+            }
+
+            $.ajax({
+                url: "/api/calendar",
+                async: false,
+                type: "GET",
+                data: {
+                    month: month,
+                    year: year,
+                    businessName: "@Model.Name"
+                }
+            }).done(function (result) {
+                arrayOfDaysWithAppo = result;
+
+            })
+            var htmlToDraw = "";
+            if ((nowMonth > 1 && nowMonth == previousMonth + 1 && nowYear == previousMonthYear)
+                || (nowMonth == 1 && previousMonth == 12 && previousMonthYear == nowYear - 1)) {
+                htmlToDraw += "<table class='table table-bordered text-center'>" +
+                "<tr>" +
+                `<th scope='col'><i class='fas fa-chevron-left text-black-50'></i></th>` +
+                "<th scope='col' colspan='5'>";
+            } else {
+                 htmlToDraw += "<table class='table table-bordered text-center'>" +
+                "<tr>" +
+                `<th scope='col' onclick='drawCalendar(${previousMonth},${previousMonthYear})' style='cursor: pointer'><i class='fas fa-chevron-left'></i></th>` +
+                "<th scope='col' colspan='5'>";
+            }
+
+            var monthNames = ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec",
+                "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"];
+            htmlToDraw += monthNames[month - 1] + " " + year;
+
+            htmlToDraw += "</th>" +
+                `<th scope='col' onclick='drawCalendar(${nextMonth},${nextMonthYear})' style='cursor: pointer'><i class='fas fa-chevron-right'></i></th>` +
+                "</tr>" +
+                "<tr>" +
+                "<th scope='col'>Pon</th>" +
+                "<th scope='col'>Wt</th>" +
+                "<th scope='col'>Śr</th>" +
+                "<th scope='col'>Czw</th>" +
+                "<th scope='col'>Pt</th>" +
+                "<th scope='col'>Sb</th>" +
+                "<th scope='col'>Nd</th>" +
+                "</tr>";
+
+            var date = new Date(year + "-" + month + "-" + "01");
+            var numberOfDaysInMonth = new Date(year, month, 0).getDate();
+            var firstDayOfMonth = date.getDay();
+
+            if (firstDayOfMonth == 0)
+                firstDayOfMonth = 7;
+            var fieldsInCalendar = numberOfDaysInMonth + (firstDayOfMonth - 1);
+            var numberOfRows = Math.ceil(fieldsInCalendar / 7);
+
+            var dayInCalendar = 1;
+            var rowInCalendar = 1;
+            while (rowInCalendar <= numberOfRows) {
+                htmlToDraw += "<tr>";
+                if (rowInCalendar == 1) {
+                    for (i = 1; i <= 7; i++) {
+                        var month2digit = ("0" + (date.getMonth() + 1)).slice(-2);
+                        var day2digit = ("0" + dayInCalendar).slice(-2);
+                        var appDate = String(date.getFullYear()) + month2digit + day2digit;
+
+                        if (i < firstDayOfMonth)
+                            htmlToDraw += "<th></th>";
+                        else {
+                            var htmlInCell;
+                            if (dayInCalendar <= nowDay && month == nowMonth && year == nowYear) {
+                                htmlInCell = `<a class='btn btn-light w-100 disabled'>${dayInCalendar}</a>`;
+                            } else {
+                                if (arrayOfDaysWithAppo.some(a => a.Day == dayInCalendar)) {
+                                    if (arrayOfDaysWithAppo.find(a => a.Day == dayInCalendar).Status == "PartlyBooked")
+                                        htmlInCell = `<a href='#' class='btn btn-warning w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                                    else if (arrayOfDaysWithAppo.find(a => a.Day == dayInCalendar).Status == "FullyBooked")
+                                        htmlInCell = `<a href='#' class='btn btn-danger w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                                    else
+                                        htmlInCell = `<a href='#' class='btn btn-success w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                                } else {
+                                htmlInCell = `<a class='btn btn-secondary w-100 disabled'>${dayInCalendar}</a>`;
+                                }
+                            }
+
+                            htmlToDraw += `<td>${htmlInCell}</td>`;
+                            dayInCalendar++;
+                        }
+                    }
+                }
+                else {
+                    for (i = 1; i <= 7; i++) {
+                        var month2digit = ("0" + (date.getMonth() + 1)).slice(-2);
+                        var day2digit = ("0" + dayInCalendar).slice(-2);
+                        var appDate = String(date.getFullYear()) + month2digit + day2digit;
+
+                        var htmlInCell;
+                        if (dayInCalendar <= nowDay && month == nowMonth && year == nowYear) {
+                            htmlInCell = `<a class='btn btn-light w-100 disabled'>${dayInCalendar}</a>`;
+                        } else {
+                            if (arrayOfDaysWithAppo.some(a => a.Day == dayInCalendar)) {
+                                if (arrayOfDaysWithAppo.find(a => a.Day == dayInCalendar).Status == "PartlyBooked")
+                                    htmlInCell = `<a href='#' class='btn btn-warning w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                                else if (arrayOfDaysWithAppo.find(a => a.Day == dayInCalendar).Status == "FullyBooked")
+                                    htmlInCell = `<a href='#' class='btn btn-danger w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                                else
+                                    htmlInCell = `<a href='#' class='btn btn-success w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                            }
+                            else {
+                                htmlInCell = `<a class='btn btn-secondary w-100 disabled'>${dayInCalendar}</a>`;
+                            }
+                        }
+                        
+                        htmlToDraw += `<td>${htmlInCell}</td>`;
+                        dayInCalendar++;
+                        if (dayInCalendar > numberOfDaysInMonth) break;
+                    }
+                }
+                htmlToDraw += "</tr>";
+                rowInCalendar++;
+            }
+            htmlToDraw += "</table>";
+
+            $("#calendar").html(htmlToDraw);
+        }
+    </script>
+}

@@ -12,5 +12,7 @@ namespace Appocal.Models
         public Schedule Schedule { get; set; }
         public BusinessPage BusinessPage{ get; set; }
         public List<Review> Reviews{ get; set; }
+        public List<Service> Services { get; set; }
+
     }
 }

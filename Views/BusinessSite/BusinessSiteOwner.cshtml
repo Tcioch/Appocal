@@ -14,6 +14,48 @@
     </div>
 </div>
 
+<div class="modal fade" id="makeAppo" tabindex="-1" role="dialog" aria-labelledby="makeAppointment" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="makeAppoTitle">Umów spotkanie</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label for="workTimeSelect">Wybierz dostępny zakres czasu</label>
+                    <select class="form-control" id="workTimeSelect">
+                        <option>1</option>
+                        <option>2</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="workTimeSelect">Wybierz usługę</label>
+                    <select class="form-control" id="workTimeSelect">
+                        <option>1</option>
+                        <option>2</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="workTimeSelect">Podaj dogodną godzinę, która będzie się mieścić w dostępnym zakresie czasu</label>
+                    <select class="form-control" id="workTimeSelect" disabled>
+                        <option>1</option>
+                        <option>2</option>
+                    </select>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                    <input type="submit" class="btn btn-success" value="Umów" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         var nowMonth = new Date().getMonth() + 1;
@@ -112,11 +154,11 @@
                             } else {
                                 if (arrayOfDaysWithAppo.some(a => a.Day == dayInCalendar)) {
                                     if (arrayOfDaysWithAppo.find(a => a.Day == dayInCalendar).Status == "PartlyBooked")
-                                        htmlInCell = `<a href='#' class='btn btn-warning w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                                        htmlInCell = `<a href='#' onClick="openModal(${appDate})" class='btn btn-warning w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
                                     else if (arrayOfDaysWithAppo.find(a => a.Day == dayInCalendar).Status == "FullyBooked")
-                                        htmlInCell = `<a href='#' class='btn btn-danger w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                                        htmlInCell = `<a href='#' disabled class='btn btn-danger w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
                                     else
-                                        htmlInCell = `<a href='#' class='btn btn-success w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                                        htmlInCell = `<a href='#' onClick="openModal(${appDate})" class='btn btn-success w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
                                 } else {
                                 htmlInCell = `<a class='btn btn-secondary w-100 disabled'>${dayInCalendar}</a>`;
                                 }
@@ -139,17 +181,17 @@
                         } else {
                             if (arrayOfDaysWithAppo.some(a => a.Day == dayInCalendar)) {
                                 if (arrayOfDaysWithAppo.find(a => a.Day == dayInCalendar).Status == "PartlyBooked")
-                                    htmlInCell = `<a href='#' class='btn btn-warning w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                                    htmlInCell = `<a href='#' onClick="openModal(${appDate})" class='btn btn-warning w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
                                 else if (arrayOfDaysWithAppo.find(a => a.Day == dayInCalendar).Status == "FullyBooked")
-                                    htmlInCell = `<a href='#' class='btn btn-danger w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                                    htmlInCell = `<a href='#' disabled class='btn btn-danger w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
                                 else
-                                    htmlInCell = `<a href='#' class='btn btn-success w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                                    htmlInCell = `<a href='#' onClick="openModal(${appDate})" class='btn btn-success w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
                             }
                             else {
                                 htmlInCell = `<a class='btn btn-secondary w-100 disabled'>${dayInCalendar}</a>`;
                             }
                         }
-                        
+
                         htmlToDraw += `<td>${htmlInCell}</td>`;
                         dayInCalendar++;
                         if (dayInCalendar > numberOfDaysInMonth) break;
@@ -161,6 +203,11 @@
             htmlToDraw += "</table>";
 
             $("#calendar").html(htmlToDraw);
+        }
+
+        function openModal(date) {
+            $('#makeAppoTitle').html(date.toString().substr(6, 2) + "-" + date.toString().substr(4, 2) + "-" + date.toString().substr(0, 4));
+            $('#makeAppo').modal('show');
         }
     </script>
 }

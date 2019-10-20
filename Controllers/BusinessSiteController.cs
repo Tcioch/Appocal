@@ -1,13 +1,9 @@
 ﻿using Appocal.Models;
 using Appocal.ViewModels;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Reflection;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Appocal.Controllers
@@ -15,6 +11,7 @@ namespace Appocal.Controllers
     public class BusinessSiteController : Controller
     {
         private ApplicationDbContext _contex;
+
         public BusinessSiteController()
         {
             _contex = new ApplicationDbContext();
@@ -39,31 +36,58 @@ namespace Appocal.Controllers
                 return RedirectToAction("Index", "Home");
 
             var businessId = business.Id;
-            var model = getBusinessDescriptionViewModel(businessId);
+            var model = GetBusinessDescriptionViewModel(businessId);
 
             var userId = HttpContext.User.Identity.GetUserId();
             if (userId == businessId)
-            return View("BusinessSiteOwner", model);
+                return View("BusinessSiteOwner", model);
             else
-            return View(model);
+                return View(model);
         }
 
         [Authorize(Roles = "Business")]
         public ActionResult Services()
         {
             var userId = HttpContext.User.Identity.GetUserId();
-            var model = new BusinessServicesViewModel(userId);
+            var model = GetBusinessServicesViewModel(userId);
             return View(model);
+        }
+
+        [Authorize(Roles = "Business")]
+        public ActionResult AddService(BusinessServicesViewModel model)
+        {
+            var userId = HttpContext.User.Identity.GetUserId();
+            BusinessServicesViewModel modelToReturn;
+            if (!ModelState.IsValid)
+            {
+                modelToReturn = GetBusinessServicesViewModel(userId);
+                modelToReturn.NewService = model.NewService;
+                return View("Services", modelToReturn);
+            }
+            var user = _contex.Users.Include(u => u.Business.Services).Single(u => u.Id == userId);
+            user.Business.Services.Add(new Service { Name = model.NewService.Name, Duration = model.NewService.Duration, Active = true });
+
+            if (_contex.SaveChanges() > 0)
+            {
+                modelToReturn = GetBusinessServicesViewModel(userId);
+                ViewBag.SuccessMessage = "Pomyślnie zapisano zmiany";
+                return View("Services", modelToReturn);
+            }
+            else
+            {
+                modelToReturn = GetBusinessServicesViewModel(userId);
+                ViewBag.SuccessMessage = "Coś poszło nie tak, zmiany nie zostały zapisane";
+                return View("Services", modelToReturn);
+            }
         }
 
         [Authorize(Roles = "Business")]
         public ActionResult Settings()
         {
             var userId = HttpContext.User.Identity.GetUserId();
-            var model = getBusinessDescriptionViewModel(userId);
+            var model = GetBusinessDescriptionViewModel(userId);
             return View(model);
         }
-
 
         [Authorize(Roles = "Business")]
         public ActionResult ChangeSettings(BusinessDescriptionViewModel model)
@@ -84,13 +108,29 @@ namespace Appocal.Controllers
             else
             {
                 ViewBag.SuccessMessage = "Coś poszło nie tak, zmiany nie zostały zapisane";
-                return View("Settings", getBusinessDescriptionViewModel(userId));
+                return View("Settings", GetBusinessDescriptionViewModel(userId));
             }
         }
 
-        private BusinessDescriptionViewModel getBusinessDescriptionViewModel(string userId)
+        private BusinessServicesViewModel GetBusinessServicesViewModel(string userId)
         {
-            var model = new BusinessDescriptionViewModel(); 
+            var services = _contex.Users.Include(u => u.Business.Services).SingleOrDefault(u => u.Id == userId).Business.Services.ToList();
+            var model = new BusinessServicesViewModel();
+            model.Services = new List<ServiceViewModel>();
+            foreach (var service in services)
+            {
+                var singleService = new ServiceViewModel { Duration = service.Duration, Name = service.Name };
+                if (service.Active == true)
+                {
+                    model.Services.Add(singleService);
+                }
+            }
+            return model;
+        }
+
+        private BusinessDescriptionViewModel GetBusinessDescriptionViewModel(string userId)
+        {
+            var model = new BusinessDescriptionViewModel();
             var user = _contex.Users.Include(u => u.Business.BusinessPage.PageContent).Single(u => u.Id == userId);
             model.Name = user.Business.Name;
             model.Title = user.Business.BusinessPage.PageContent.Title;

@@ -207,6 +207,10 @@
     <Compile Include="Migrations\201910182119368_Servies.Designer.cs">
       <DependentUpon>201910182119368_Servies.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201910201643291_activeService.cs" />
+    <Compile Include="Migrations\201910201643291_activeService.Designer.cs">
+      <DependentUpon>201910201643291_activeService.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Service.cs" />
     <Compile Include="ViewModels\AccountViewModels.cs" />
@@ -227,6 +231,7 @@
     <Compile Include="ViewModels\BusinessRegisterViewModel.cs" />
     <Compile Include="ViewModels\BusinessDescriptionViewModel.cs" />
     <Compile Include="ViewModels\BusinessServicesViewModel.cs" />
+    <Compile Include="ViewModels\ServiceViewModel.cs" />
     <Compile Include="ViewModels\WorkTimeViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
     <Compile Include="ViewModels\IndividualRegisterViewModel.cs" />
@@ -765,6 +770,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201910182119368_Servies.resx">
       <DependentUpon>201910182119368_Servies.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910201643291_activeService.resx">
+      <DependentUpon>201910201643291_activeService.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

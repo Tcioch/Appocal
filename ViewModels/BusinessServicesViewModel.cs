@@ -9,12 +9,7 @@ namespace Appocal.ViewModels
 {
     public class BusinessServicesViewModel
     {
-        public List<Service> Services { get; set; }
-
-        public BusinessServicesViewModel(string userId)
-        {
-            var _contex = new ApplicationDbContext();
-            Services = _contex.Users.Include(u => u.Business.Services).SingleOrDefault(u => u.Id == userId).Business.Services.ToList();
-        }
+        public List<ServiceViewModel> Services { get; set; }
+        public ServiceViewModel NewService { get; set; }
     }
 }

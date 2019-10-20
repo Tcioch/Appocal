@@ -2,9 +2,124 @@
 @{
     ViewBag.Title = "Usługi";
 }
+<div class="m-4"></div>
+@ViewBag.SuccessMessage
+@Html.ValidationSummary("", new { @class = "text-danger" })
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addNewServiceModal">
+    Dodaj nową usługę
+</button>
+<table class="table col-6">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nazwa</th>
+            <th scope="col">Czas trwania</th>
+            <th scope="col">Akcja</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{int i = 0;}
+        @foreach (var service in Model.Services)
+        {
+            <tr>
+                <th scope="row">@(i + 1)</th>
+                <td>@service.Name</td>
+                <td>@service.Duration</td>
+                <td>
+                    <button class="btn btn-sm btn-warning" title="edytuj" data-toggle="modal" data-target="#editServiceModal_@i"><i class='fas fa-edit'></i></button>
+                    <button class="btn btn-sm btn-danger" title="usuń" data-toggle="modal" data-target="#deleteServiceModal_@i"><i class='fas fa-trash'></i></button>
+                </td>
+            </tr>
+            i++;
+        }
+    </tbody>
+</table>
 
-@foreach (var service in Model.Services)
+<!-- Modals -->
+@for (i = 0; i < Model.Services.Count; i++)
 {
-    @service.Name
-    @service.Duration
+    <div class="modal fade" id="editServiceModal_@i" tabindex="-1" role="dialog" aria-labelledby="editServiceModal_@i" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editServiceLabel_@i">Edytuj usługę @Model.Services[i].Name</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                @using (Html.BeginForm("EditService", "BusinessSite"))
+                {
+                    <div class="modal-body">
+                        <div>
+                            @Html.LabelFor(m => m.Services[i].Name)
+                            @Html.TextBoxFor(m => m.Services[i].Name, new { @class = "form-control" })
+                        </div>
+                        <div>
+                            @Html.LabelFor(m => m.Services[i].Duration)
+                            @Html.TextBoxFor(m => m.Services[i].Duration, new { @class = "form-control", type = "number", min = "1", max = "1440" })
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                        <input type="submit" class="btn btn-warning" value="Zapisz" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteServiceModal_@i" tabindex="-1" role="dialog" aria-labelledby="deleteServiceModal_@i" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteServiceLabel_@i">Usuń usługę @Model.Services[i].Name</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                @using (Html.BeginForm("DeleteService", "BusinessSite"))
+                {
+                    <div class="modal-body">
+
+                        Czy na pewno chcesz usunąć usługę @Model.Services[i].Name?<br />
+                        Wizyty które zostały umówione na tę usługę nie zostaną usunięte.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                        <input type="submit" class="btn btn-danger" value="Usuń" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 }
+
+<div class="modal fade" id="addNewServiceModal" tabindex="-1" role="dialog" aria-labelledby="addNewServiceModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newServiceLabel">Dodaj nową usługę</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Html.BeginForm("AddService", "BusinessSite"))
+            {
+                <div class="modal-body">
+                    <div>
+                        @Html.LabelFor(m => m.NewService.Name)
+                        @Html.TextBoxFor(m => m.NewService.Name, new { @class = "form-control" })
+                    </div>
+                    <div>
+                        @Html.LabelFor(m => m.NewService.Duration)
+                        @Html.TextBoxFor(m => m.NewService.Duration, new { @class = "form-control", type = "number", min = "1", max = "1440" })
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                    <input type="submit" class="btn btn-primary" value="Zapisz" />
+                </div>
+            }
+        </div>
+    </div>
+</div>

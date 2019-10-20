@@ -70,6 +70,68 @@ namespace Appocal.Controllers
             if (_contex.SaveChanges() > 0)
             {
                 modelToReturn = GetBusinessServicesViewModel(userId);
+                ViewBag.SuccessMessage = "Pomyślnie dodano nową usługę.";
+                return View("Services", modelToReturn);
+            }
+            else
+            {
+                modelToReturn = GetBusinessServicesViewModel(userId);
+                ViewBag.SuccessMessage = "Coś poszło nie tak, usługa nie została dodana.";
+                return View("Services", modelToReturn);
+            }
+        }
+
+        [Authorize(Roles = "Business")]
+        public ActionResult EditService(BusinessServicesViewModel model)
+        {
+            var userId = HttpContext.User.Identity.GetUserId();
+            BusinessServicesViewModel modelToReturn;
+
+            if (!ModelState.IsValid)
+            {
+                modelToReturn = GetBusinessServicesViewModel(userId);
+                modelToReturn.NewService = model.NewService;
+                return View("Services", modelToReturn);
+            }
+            var user = _contex.Users.Include(u => u.Business.Services).Single(u => u.Id == userId);
+            var service = user.Business.Services.SingleOrDefault(s => s.Id == model.Services[0].Id);
+
+            service.Duration = model.Services[0].Duration;
+            service.Name = model.Services[0].Name;
+
+            if (_contex.SaveChanges() > 0)
+            {
+                modelToReturn = GetBusinessServicesViewModel(userId);
+                ViewBag.SuccessMessage = "Pomyślnie zapisano zmiany";
+                return View("Services", modelToReturn);
+            }
+            else
+            {
+                modelToReturn = GetBusinessServicesViewModel(userId);
+                ViewBag.SuccessMessage = "Coś poszło nie tak, zmiany nie zostały zapisane";
+                return View("Services", modelToReturn);
+            }
+        }
+        [Authorize(Roles = "Business")]
+        public ActionResult DeleteService(BusinessServicesViewModel model)
+        {
+            var userId = HttpContext.User.Identity.GetUserId();
+            BusinessServicesViewModel modelToReturn;
+
+            if (!ModelState.IsValid)
+            {
+                modelToReturn = GetBusinessServicesViewModel(userId);
+                modelToReturn.NewService = model.NewService;
+                return View("Services", modelToReturn);
+            }
+            var user = _contex.Users.Include(u => u.Business.Services).Single(u => u.Id == userId);
+            var service = user.Business.Services.SingleOrDefault(s => s.Id == model.Services[0].Id);
+
+            service.Active = false;
+
+            if (_contex.SaveChanges() > 0)
+            {
+                modelToReturn = GetBusinessServicesViewModel(userId);
                 ViewBag.SuccessMessage = "Pomyślnie zapisano zmiany";
                 return View("Services", modelToReturn);
             }
@@ -119,7 +181,7 @@ namespace Appocal.Controllers
             model.Services = new List<ServiceViewModel>();
             foreach (var service in services)
             {
-                var singleService = new ServiceViewModel { Duration = service.Duration, Name = service.Name };
+                var singleService = new ServiceViewModel { Id= service.Id, Duration = service.Duration, Name = service.Name };
                 if (service.Active == true)
                 {
                     model.Services.Add(singleService);

@@ -9,6 +9,7 @@ namespace Appocal.ViewModels
 {
     public class ServiceViewModel
     {
+        public int Id { get; set; }
         [Required]
         [Display(Name = "Nazwa usługi")]
         public String Name { get; set; }

@@ -82,7 +82,7 @@ namespace Appocal.Controllers
         }
 
         [Authorize(Roles = "Business")]
-        public ActionResult EditService(BusinessServicesViewModel model)
+        public ActionResult EditService(ServiceViewModel model)
         {
             var userId = HttpContext.User.Identity.GetUserId();
             BusinessServicesViewModel modelToReturn;
@@ -90,14 +90,13 @@ namespace Appocal.Controllers
             if (!ModelState.IsValid)
             {
                 modelToReturn = GetBusinessServicesViewModel(userId);
-                modelToReturn.NewService = model.NewService;
                 return View("Services", modelToReturn);
             }
             var user = _contex.Users.Include(u => u.Business.Services).Single(u => u.Id == userId);
-            var service = user.Business.Services.SingleOrDefault(s => s.Id == model.Services[0].Id);
+            var service = user.Business.Services.SingleOrDefault(s => s.Id == model.Id);
 
-            service.Duration = model.Services[0].Duration;
-            service.Name = model.Services[0].Name;
+            service.Duration = model.Duration;
+            service.Name = model.Name;
 
             if (_contex.SaveChanges() > 0)
             {
@@ -113,7 +112,7 @@ namespace Appocal.Controllers
             }
         }
         [Authorize(Roles = "Business")]
-        public ActionResult DeleteService(BusinessServicesViewModel model)
+        public ActionResult DeleteService(ServiceViewModel model)
         {
             var userId = HttpContext.User.Identity.GetUserId();
             BusinessServicesViewModel modelToReturn;
@@ -121,24 +120,23 @@ namespace Appocal.Controllers
             if (!ModelState.IsValid)
             {
                 modelToReturn = GetBusinessServicesViewModel(userId);
-                modelToReturn.NewService = model.NewService;
                 return View("Services", modelToReturn);
             }
             var user = _contex.Users.Include(u => u.Business.Services).Single(u => u.Id == userId);
-            var service = user.Business.Services.SingleOrDefault(s => s.Id == model.Services[0].Id);
+            var service = user.Business.Services.SingleOrDefault(s => s.Id == model.Id);
 
             service.Active = false;
 
             if (_contex.SaveChanges() > 0)
             {
                 modelToReturn = GetBusinessServicesViewModel(userId);
-                ViewBag.SuccessMessage = "Pomyślnie zapisano zmiany";
+                ViewBag.SuccessMessage = "Pomyślnie usunięto usługę";
                 return View("Services", modelToReturn);
             }
             else
             {
                 modelToReturn = GetBusinessServicesViewModel(userId);
-                ViewBag.SuccessMessage = "Coś poszło nie tak, zmiany nie zostały zapisane";
+                ViewBag.SuccessMessage = "Coś poszło nie tak, usługa nie została usunięta";
                 return View("Services", modelToReturn);
             }
         }

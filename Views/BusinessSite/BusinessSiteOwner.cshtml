@@ -26,22 +26,13 @@
             <div class="modal-body">
 
                 <div class="form-group">
-                    <label for="workTimeSelect">Wybierz dostępny zakres czasu</label>
-                    <select class="form-control" id="workTimeSelect">
-                        <option>1</option>
-                        <option>2</option>
+                    <label for="serviceSelect">Wybierz usługę</label>
+                    <select class="form-control" id="serviceSelect">
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="workTimeSelect">Wybierz usługę</label>
-                    <select class="form-control" id="workTimeSelect">
-                        <option>1</option>
-                        <option>2</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="workTimeSelect">Podaj dogodną godzinę, która będzie się mieścić w dostępnym zakresie czasu</label>
-                    <select class="form-control" id="workTimeSelect" disabled>
+                    <label for="appoTimeSelect">Podaj dogodną godzinę, która będzie się mieścić w dostępnym zakresie czasu</label>
+                    <select class="form-control" id="appoTimeSelect" disabled>
                         <option>1</option>
                         <option>2</option>
                     </select>
@@ -207,6 +198,20 @@
 
         function openModal(date) {
             $('#makeAppoTitle').html(date.toString().substr(6, 2) + "-" + date.toString().substr(4, 2) + "-" + date.toString().substr(0, 4));
+            $('#serviceSelect').empty()
+            $.ajax({
+                url: "/api/business/getservices",
+                type: "GET",
+                data: { name: "@Model.Name" }
+            }).done(function (services) {
+                
+                services.forEach(function (service) {
+                    var selectDesc = service.Name + ` | ${service.Duration} minut.`;
+                    $('#serviceSelect').append(new Option(selectDesc, service.Id));
+                });
+                
+            })
+    
             $('#makeAppo').modal('show');
         }
     </script>

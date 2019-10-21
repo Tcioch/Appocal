@@ -49,17 +49,17 @@
                 </div>
                 @using (Html.BeginForm("EditService", "BusinessSite"))
                 {
-                    <div class="modal-body">
-                        <div>
-                            @Html.LabelFor(m => m.Services[i].Name)
-                            @Html.TextBoxFor(m => m.Services[i].Name, new { @class = "form-control" })
-                        </div>
-                        <div>
-                            @Html.LabelFor(m => m.Services[i].Duration)
-                            @Html.TextBoxFor(m => m.Services[i].Duration, new { @class = "form-control", type = "number", min = "1", max = "1440" })
-                        </div>
-                        @Html.HiddenFor(m => m.Services[i].Id)
-                    </div>
+            <div class="modal-body">
+                <div>
+                    @Html.LabelFor(m => m.Services[i].Name)
+                    <input class="form-control" data-val="true" data-val-required="Pole @Html.NameFor(m => m.Services[i].Name) jest wymagane." id="Services_@i _Name" name="Name" type="text" value="@Model.Services[i].Name"/>
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.Services[i].Duration)
+                    <input class="form-control" data-val="true" data-val-required="Pole @Html.NameFor(m => m.Services[i].Duration) jest wymagane." id="Services_@i _Duration" name="Duration" type="number" min="1" max="1440" value="@Model.Services[i].Duration"/>
+                </div>
+                <input type="hidden" id="Services_@i _Id" name="Id" value="@Model.Services[i].Id" />
+            </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
                         <input type="submit" class="btn btn-warning" value="Zapisz" />
@@ -85,12 +85,11 @@
                         Czy na pewno chcesz usunąć usługę @Model.Services[i].Name?<br />
                         Wizyty które zostały umówione na tę usługę nie zostaną usunięte.
                     </div>
-
-                    @Html.HiddenFor(m => m.Services[i].Name);
-                    @Html.HiddenFor(m => m.Services[i].Duration);
-                    @Html.HiddenFor(m => m.Services[i].Id);
+                    <input type="hidden" id="Services_@i _Name_delete" name="Name" value="@Model.Services[i].Name" />
+                    <input type="hidden" id="Services_@i _Duration_delete" name="Duration" value="@Model.Services[i].Duration" />
+                    <input type="hidden" id="Services_@i _Id_delete" name="Id" value="@Model.Services[i].Id" />
                     <div class="modal-footer">
-                        
+
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
                         <input type="submit" class="btn btn-danger" value="Usuń" />
                     </div>

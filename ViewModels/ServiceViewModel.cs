@@ -15,7 +15,7 @@ namespace Appocal.ViewModels
         public String Name { get; set; }
         [Required]
         [Display(Name = "Czas trwania")]
-        [Range(1, 1440, ErrorMessage = "Podaj wartość od {0} do {1})")]
+        [Range(1, 1440, ErrorMessage = "Podaj wartość od {1} do {2})")]
         [RegularExpression("([0-9]+)", ErrorMessage = "Wprowadź liczbę")]
         public int Duration { get; set; }
     }

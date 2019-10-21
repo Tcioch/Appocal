@@ -56,7 +56,7 @@
                 </div>
                 <div>
                     @Html.LabelFor(m => m.Services[i].Duration)
-                    <input class="form-control" data-val="true" data-val-required="Pole @Html.NameFor(m => m.Services[i].Duration) jest wymagane." id="Services_@i _Duration" name="Duration" type="number" min="1" max="1440" value="@Model.Services[i].Duration"/>
+                    <input class="form-control" data-val="true" data-val-required="Pole @Html.NameFor(m => m.Services[i].Duration) jest wymagane." id="Services_@i _Duration" name="Duration" type="number" min="0" max="1440" step="5" value="@Model.Services[i].Duration"/>
                 </div>
                 <input type="hidden" id="Services_@i _Id" name="Id" value="@Model.Services[i].Id" />
             </div>
@@ -117,7 +117,7 @@
                     </div>
                     <div>
                         @Html.LabelFor(m => m.NewService.Duration)
-                        @Html.TextBoxFor(m => m.NewService.Duration, new { @class = "form-control", type = "number", min = "1", max = "1440" })
+                        @Html.TextBoxFor(m => m.NewService.Duration, new { @class = "form-control", type = "number", min = "0", max = "1440", step = "5"})
                     </div>
                 </div>
                 <div class="modal-footer">

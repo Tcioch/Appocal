@@ -128,3 +128,6 @@ C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migration
 C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.update_users.resources
 C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.Servies.resources
 C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.activeService.resources
+C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.userID.resources
+C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.apposervice.resources
+C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.serviceidappo.resources

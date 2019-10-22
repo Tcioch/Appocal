@@ -1,9 +1,11 @@
 ﻿@model Appocal.ViewModels.BusinessDescriptionViewModel
 @{
-    ViewBag.Title = "Ustawienia";
+    ViewBag.Title = Model.Name;
 }
 
 <h1>@Model.Name</h1>
+
+@TempData["message"]
 <div class="containter">
     <div class="row">
         <div class="col-md-8">
@@ -24,24 +26,25 @@
                 </button>
             </div>
             <div class="modal-body">
+                <form action="/Calendar/SetAppointment" method="post">
+                    <div class="form-group">
+                        <label for="serviceSelect">Wybierz usługę</label>
+                        <select class="form-control" id="serviceSelect" name="serviceId">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="appoTimeSelect">Wybierz godzinę</label>
+                        <select class="form-control" id="appoTimeSelect" name="timeOfMeetingWithId" disabled>
+                        </select>
+                    </div>
+                    <input type="hidden" id="appoDateTime" name="dateOfMeeting" value="" />
+                    <input type="hidden" id="businessName" name="businessName" value="@Model.Name" />
 
-                <div class="form-group">
-                    <label for="serviceSelect">Wybierz usługę</label>
-                    <select class="form-control" id="serviceSelect">
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="appoTimeSelect">Podaj dogodną godzinę, która będzie się mieścić w dostępnym zakresie czasu</label>
-                    <select class="form-control" id="appoTimeSelect" disabled>
-                        <option>1</option>
-                        <option>2</option>
-                    </select>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
-                    <input type="submit" class="btn btn-success" value="Umów" />
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                        <input type="submit" class="btn btn-success" id="setNewAppointment" value="Umów" disabled />
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -199,20 +202,50 @@
         function openModal(date) {
             $('#makeAppoTitle').html(date.toString().substr(6, 2) + "-" + date.toString().substr(4, 2) + "-" + date.toString().substr(0, 4));
             $('#serviceSelect').empty()
+            $('#serviceSelect').prepend('<option disabled="disabled" selected>-</option>');
+            $('#appoTimeSelect').empty();
+            $('#appoTimeSelect').prop('disabled', true);
+            $('#setNewAppointment').prop('disabled', true);
+            $('#appoTimeSelect').prepend('<option disabled="disabled" selected>-</option>');
+            $('#appoDateTime').val(date);
+
             $.ajax({
                 url: "/api/business/getservices",
                 type: "GET",
-                data: { name: "@Model.Name" }
+                data: { businessName: "@Model.Name" }
             }).done(function (services) {
-                
+
                 services.forEach(function (service) {
                     var selectDesc = service.Name + ` | ${service.Duration} minut.`;
                     $('#serviceSelect').append(new Option(selectDesc, service.Id));
                 });
-                
             })
-    
             $('#makeAppo').modal('show');
-        }
+        };
+
+        $(document).on('change', '#serviceSelect', function () {
+            $('#appoTimeSelect').empty();
+            $('#appoTimeSelect').prepend('<option disabled="disabled" selected>-</option>');
+             $.ajax({
+                url: "/api/appointments/getavailablehours",
+                type: "POST",
+                 data: {
+                     ServiceId: this.value.toString(),
+                     BusinessName: "@Model.Name",
+                     Date: $('#appoDateTime').val().toString()
+                 }
+            }).done(function (availableHours) {
+                availableHours.forEach(function (availableHour) {
+                    var selectDesc = availableHour.substr(0, 2) + ":" + availableHour.substr(2, 2);
+                    $('#appoTimeSelect').append(new Option(selectDesc, availableHour));
+                });
+                $('#appoTimeSelect').prop('disabled', false);
+            })
+        });
+
+        $(document).on('change', '#appoTimeSelect', function () {
+            $('#setNewAppointment').prop('disabled', false);
+        });
+
     </script>
 }

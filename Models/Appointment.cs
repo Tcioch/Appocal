@@ -12,8 +12,9 @@ namespace Appocal.Models
         public DateTime AppointmentDate { get; set; }
         public int Duration { get; set; }
         public bool? Available { get; set; }
-        public ApplicationUser Client{ get; set; }
+        public string Client_Id{ get; set; }
         public bool IsConfirmed { get; set; }
+        public int? Service_id { get; set; }
         public Appointment Clone()
         {
             return (Appointment)this.MemberwiseClone();

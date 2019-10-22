@@ -1,12 +1,7 @@
 ﻿using Appocal.Models;
-using Microsoft.AspNet.Identity;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Web;
 using System.Web.Http;
-using System.Web.Mvc;
 
 namespace Appocal.Controllers.API
 {
@@ -17,11 +12,18 @@ namespace Appocal.Controllers.API
         {
             _contex = new ApplicationDbContext();
         }
-        //Get /api/calendar/i
-        public IHttpActionResult GetServices(string name)
+        public IHttpActionResult GetServices(string businessName)
         {
-            var services = _contex.Users.Include(u => u.Business.Services).Single(u => u.UserName == name).Business.Services;
+            var services = _contex.Users.Include(u => u.Business.Services).Single(u => u.UserName == businessName).Business.Services.Where(s => s.Active == true);
+            services = services.OrderBy(s => s.Name);
             return Ok(services);
+        }
+
+        public IHttpActionResult GetService(string id)
+        {
+            int serviceId = int.Parse(id);
+            var service = _contex.Services.SingleOrDefault(s => s.Id == serviceId);
+            return Ok(service);
         }
     }
 }

@@ -2,6 +2,7 @@
 using Appocal.Models;
 using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
@@ -58,6 +59,59 @@ namespace Appocal.Controllers.API
                 appointmentsInDisplayedMonth = appointmentsInDisplayedMonth.Except(singleFullDay).ToList();
             }
             return Ok(daysInMonth);
+        }
+
+        [HttpPatch]
+        [Authorize(Roles = "Business")]
+        public IHttpActionResult ConfirmAppointment(int id)
+        {
+
+            var userId = HttpContext.Current.User.Identity.GetUserId();
+
+            if (_contex.Users.Include(u => u.Business.Schedule.Appointments).SingleOrDefault(u => u.Id == userId).Business.Schedule.Appointments.Any(a => a.Id == id))
+            {
+                var appointmentToConfirm = _contex.Appointments.Single(a => a.Id == id);
+                appointmentToConfirm.IsConfirmed = true;
+                if (_contex.SaveChanges() > 0)
+                {
+                    return Ok(true);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
+        [HttpDelete]
+        [Authorize(Roles = "Business")]
+        public IHttpActionResult DeleteAppointment(int id)
+        {
+            
+            var userId = HttpContext.Current.User.Identity.GetUserId();
+
+            if (_contex.Users.Include(u => u.Business.Schedule.Appointments).SingleOrDefault(u => u.Id == userId).Business.Schedule.Appointments.Any(a => a.Id == id))
+            {
+                var appointmentToDelete = _contex.Appointments.Single(a => a.Id == id);
+                _contex.Appointments.Remove(appointmentToDelete);
+                if (_contex.SaveChanges() > 0)
+                {
+                    return Ok(true);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return NotFound();
+            }
         }
     }
 }

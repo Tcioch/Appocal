@@ -340,3 +340,5 @@ ASALocalRun/
 healthchecksdb
 App_Data/aspnet-Appocal-20190813093306.mdf
 App_Data/aspnet-Appocal-20190813093306.mdf
+*.ldf
+*.mdf

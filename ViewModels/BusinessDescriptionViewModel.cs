@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Appocal.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -16,8 +17,13 @@ namespace Appocal.ViewModels
         public string Title { get; set; }
         [Required]
         [Display(Name = "Opis")]
-        [AllowHtmlAttribute]
-        //[StringLength(10000, ErrorMessage = "{0} musi zawierać do {1} znaków.")]
+        [AllowHtml]
         public string Content { get; set; }
+        [Required]
+        public bool Public { get; set; }
+        [Required]
+        [StringLength(120, ErrorMessage = "{0} musi zawierać od {2} do {1} znaków.", MinimumLength = 25)]
+        public string ShortDescription { get; set; }
+        public List<Review> Reviews { get; set; }
     }
 }

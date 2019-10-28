@@ -182,11 +182,14 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\API\AppointmentsController.cs" />
+    <Compile Include="Controllers\API\BusinessController.cs" />
     <Compile Include="Controllers\API\CalendarController.cs" />
+    <Compile Include="Controllers\API\UserController.cs" />
     <Compile Include="Controllers\BusinessSiteController.cs" />
     <Compile Include="Controllers\CalendarController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Dtos\CalendarDayDto.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -203,7 +206,39 @@
     <Compile Include="Migrations\201908131949052_update_users.Designer.cs">
       <DependentUpon>201908131949052_update_users.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201910182119368_Servies.cs" />
+    <Compile Include="Migrations\201910182119368_Servies.Designer.cs">
+      <DependentUpon>201910182119368_Servies.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910201643291_activeService.cs" />
+    <Compile Include="Migrations\201910201643291_activeService.Designer.cs">
+      <DependentUpon>201910201643291_activeService.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910221740161_userID.cs" />
+    <Compile Include="Migrations\201910221740161_userID.Designer.cs">
+      <DependentUpon>201910221740161_userID.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910221900532_appo-service.cs" />
+    <Compile Include="Migrations\201910221900532_appo-service.Designer.cs">
+      <DependentUpon>201910221900532_appo-service.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910221911020_serviceidappo.cs" />
+    <Compile Include="Migrations\201910221911020_serviceidappo.Designer.cs">
+      <DependentUpon>201910221911020_serviceidappo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910272152336_update_client_Id.cs" />
+    <Compile Include="Migrations\201910272152336_update_client_Id.Designer.cs">
+      <DependentUpon>201910272152336_update_client_Id.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910282000176_bussiness-public.cs" />
+    <Compile Include="Migrations\201910282000176_bussiness-public.Designer.cs">
+      <DependentUpon>201910282000176_bussiness-public.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\HelperModels\AppointmentDataApi.cs" />
+    <Compile Include="Models\HelperModels\AppointmentRequest.cs" />
+    <Compile Include="Models\Service.cs" />
+    <Compile Include="Models\Validations.cs" />
     <Compile Include="ViewModels\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -221,11 +256,18 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\BusinessRegisterViewModel.cs" />
     <Compile Include="ViewModels\BusinessDescriptionViewModel.cs" />
+    <Compile Include="ViewModels\BusinessServicesViewModel.cs" />
+    <Compile Include="ViewModels\MessageViewModel.cs" />
+    <Compile Include="ViewModels\NameViewModel.cs" />
+    <Compile Include="ViewModels\ReviewViewModel.cs" />
+    <Compile Include="ViewModels\ServiceViewModel.cs" />
     <Compile Include="ViewModels\WorkTimeViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
     <Compile Include="ViewModels\IndividualRegisterViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootbox.js\bootbox.js" />
+    <Content Include="Content\bootbox.js\bootbox.min.js" />
     <Content Include="Content\bootstrap\css\bootstrap-grid.css" />
     <Content Include="Content\bootstrap\css\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap\css\bootstrap-reboot.css" />
@@ -604,6 +646,7 @@
     <Content Include="Content\popper\umd\popper-utils.min.js.map" />
     <Content Include="Content\popper\umd\popper.js.map" />
     <Content Include="Content\popper\umd\popper.min.js.map" />
+    <Content Include="Content\bootbox.js\bootbox.min.js.map" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
@@ -731,9 +774,15 @@
     <Content Include="Views\Calendar\AddNewTime.cshtml" />
     <Content Include="Views\Shared\_Navbar.cshtml" />
     <Content Include="Views\BusinessSite\Settings.cshtml" />
+    <Content Include="Views\BusinessSite\Show.cshtml" />
+    <Content Include="Views\BusinessSite\BusinessSiteOwner.cshtml" />
+    <Content Include="Views\BusinessSite\Services.cshtml" />
+    <Content Include="Views\BusinessSite\AddReview.cshtml" />
+    <Content Include="Views\User\NewMessageForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Business\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -753,6 +802,27 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201908131949052_update_users.resx">
       <DependentUpon>201908131949052_update_users.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910182119368_Servies.resx">
+      <DependentUpon>201910182119368_Servies.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910201643291_activeService.resx">
+      <DependentUpon>201910201643291_activeService.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910221740161_userID.resx">
+      <DependentUpon>201910221740161_userID.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910221900532_appo-service.resx">
+      <DependentUpon>201910221900532_appo-service.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910221911020_serviceidappo.resx">
+      <DependentUpon>201910221911020_serviceidappo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910272152336_update_client_Id.resx">
+      <DependentUpon>201910272152336_update_client_Id.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910282000176_bussiness-public.resx">
+      <DependentUpon>201910282000176_bussiness-public.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

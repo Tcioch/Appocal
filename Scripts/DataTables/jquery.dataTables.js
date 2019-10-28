@@ -3377,8 +3377,8 @@
 	
 					/* Do the actual expansion in the DOM */
 					$(aoLocal[i][j].cell)
-						.attr('rowspan', iRowspan)
-						.attr('colspan', iColspan);
+						.attr('rowspan', 1)
+						.attr('colspan', 1);
 				}
 			}
 		}

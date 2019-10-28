@@ -1,7 +1,8 @@
 ﻿using Appocal.Models;
+using Appocal.Models.HelperModels;
 using Appocal.ViewModels;
 using Microsoft.AspNet.Identity;
-using System.Collections.Generic;
+using System;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
@@ -25,6 +26,80 @@ namespace Appocal.Controllers
         public ActionResult Index()
         {
             return View("Calendar");
+        }
+
+        [HttpPost]
+        public ActionResult SetAppointment(AppointmentDataApi appoData)
+        {
+            var userId = HttpContext.User.Identity.GetUserId();
+            var businessAppointments = _contex.Businesses.Include(b => b.Schedule.Appointments)
+                                    .SingleOrDefault(b => b.Name == appoData.BusinessName)
+                                    .Schedule.Appointments;
+            var workTime = businessAppointments.FirstOrDefault(a => a.Id == int.Parse(appoData.TimeOfMeetingWithId.Split('_').Last()));
+
+            DateTime newAppointmentDate = new DateTime(int.Parse(appoData.DateOfMeeting.ToString().Substring(0, 4)),
+                                                       int.Parse(appoData.DateOfMeeting.ToString().Substring(4, 2)),
+                                                       int.Parse(appoData.DateOfMeeting.ToString().Substring(6, 2)),
+                                                       int.Parse(appoData.TimeOfMeetingWithId.Substring(0, 2)),
+                                                       int.Parse(appoData.TimeOfMeetingWithId.Substring(2, 2)), 0);
+            Appointment newAppointment = new Appointment
+            {
+                AppointmentDate = newAppointmentDate,
+                Client_Id = userId,
+                Duration = _contex.Services.Single(s => s.Id == appoData.ServiceId).Duration,
+                Available = false,
+                IsConfirmed = false,
+                Service_id = appoData.ServiceId
+            };
+
+            int restDurationOfOldAppointment = (int)((newAppointmentDate.Ticks - workTime.AppointmentDate.Ticks) / 600000000L);
+
+            int totalOldDuration = workTime.Duration;
+
+            if (restDurationOfOldAppointment > 0 && totalOldDuration > (restDurationOfOldAppointment + newAppointment.Duration))
+            {
+                workTime.Duration = restDurationOfOldAppointment;
+                var newRestAppointment = new Appointment
+                {
+                    Duration = totalOldDuration - restDurationOfOldAppointment - newAppointment.Duration,
+                    Available = true,
+                    IsConfirmed = false,
+                    AppointmentDate = newAppointmentDate.AddMinutes(newAppointment.Duration)
+                };
+                businessAppointments.Add(newAppointment);
+                businessAppointments.Add(newRestAppointment);
+            }
+            else if (restDurationOfOldAppointment > 0 && totalOldDuration == (restDurationOfOldAppointment + newAppointment.Duration))
+            {
+                workTime.Duration = restDurationOfOldAppointment;
+                businessAppointments.Add(newAppointment);
+            }
+            else if (restDurationOfOldAppointment == 0 && totalOldDuration > (restDurationOfOldAppointment + newAppointment.Duration))
+            {
+                businessAppointments.Remove(workTime);
+                var newRestAppointment = new Appointment
+                {
+                    Duration = totalOldDuration - restDurationOfOldAppointment - newAppointment.Duration,
+                    Available = true,
+                    IsConfirmed = false,
+                    AppointmentDate = newAppointmentDate.AddMinutes(newAppointment.Duration)
+                };
+                businessAppointments.Add(newAppointment);
+                businessAppointments.Add(newRestAppointment);
+            }
+            else
+            {
+                businessAppointments.Remove(workTime);
+                businessAppointments.Add(newAppointment);
+            }
+
+            if (_contex.SaveChanges() > 0)
+                TempData["message"] = "Spotkanie zostało pomyślnie umówione!";
+            else
+                TempData["message"] = "Niestety coś poszło nie tak. Spotkanie nie zostało umówione";
+            ModelState.Clear();
+
+            return RedirectToAction("Show", "BusinessSite", new { name = appoData.BusinessName });
         }
 
         public ActionResult AddNewTime()

@@ -9,7 +9,7 @@ namespace Appocal.Models
     {
         public int Id{ get; set; }
         public DateTime ReviewDate { get; set; }
-        public ApplicationUser Client { get; set; }
+        public String Client_Id { get; set; }
         public float Rating { get; set; }
         public string Contents { get; set; }
     }

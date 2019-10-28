@@ -15,6 +15,7 @@ namespace Appocal.Models
         public DbSet<Message> Messages { get; set; }
         public DbSet<Conversation> Conversations { get; set; }
         public DbSet<MessageBox> MessageBoxes { get; set; }
+        public DbSet<Service> Services { get; set; }
 
 
         public ApplicationDbContext()

@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Calendar";
 }
 
@@ -9,16 +8,17 @@
 <div id="calendar" class="col-6 mt-2">
 </div>
 <div>
-    <table id="appoTable" class="table table-bordered table-hover" hidden>
-        <thead>
+    <table id="appoTable" class="table table-hover" hidden>
+        <thead class="thead-dark">
             <tr>
                 <th>Data</th>
-                <th>Godzina rozpoczęcia</th>
+                <th>Start</th>
                 <th>Czas trwania</th>
-                <th>Godzina zakończenia</th>
-                <th>Dostępny</th>
+                <th>Koniec</th>
+                <th>Usługa</th>
                 <th>Klient</th>
                 <th>Status</th>
+                <th>Akcja</th>
             </tr>
         </thead>
         <tbody>
@@ -27,8 +27,9 @@
 </div>
 
 @section Scripts {
-    <script>
 
+    @Scripts.Render("~/Content/bootbox.js/bootbox.min.js")
+    <script>
         var table = $("#appoTable").DataTable({
             data: [],
             columns: [
@@ -60,26 +61,64 @@
                     }
                 },
                 {
-                    data: "Available",
+                    data: "Service_id",
                     render: function (data) {
-                        if (data == true) return "Tak";
-                        else return "Nie";
+                        var toReturn;
+                        if (data == null) {
+                            toReturn = "-";
+                        } else {
+                            $.ajax({
+                                url: "/api/business/getservice",
+                                type: "GET",
+                                async: false,
+                                data: { id: data }
+                            }).done(function (service) {
+                                toReturn = service.Name;
+                            });
+                        };
+                        return toReturn;
                     }
                 },
                 {
-                    data: "Client",
+                    data: "Client_Id",
                     render: function (data) {
-                        if (data == null) return "-";
-                        else return data;
+                        var toReturn;
+                        if (data == null) {
+                            toReturn = "-";
+                        } else {
+                            $.ajax({
+                                url: "/api/user/getusername",
+                                type: "GET",
+                                async: false,
+                                data: { id: data }
+                            }).done(function (name) {
+                                toReturn = name;
+                            });
+                        };
+                        return toReturn;
+                    }
+                },
+                {
+                    data: "IsConfirmed",
+                    className: "isconfirmed",
+                    render: function (data, type, appointment) {
+                        if (appointment.Client_Id == null) return "Wolny";
+                        else {
+                            if (data == true) return "Potwierdzony";
+                            else return "Niepotwierdzony";
+                        }
                     }
                 },
                 {
                     data: "IsConfirmed",
                     render: function (data, type, appointment) {
-                        if (appointment.Client == null) return "-";
-                        else {
-                            if (data == "true") return "Potwierdzony";
-                            else return "Niepotwierdzony";
+                        if (appointment.Client_Id == null) {
+                            return `<button class='btn btn-sm btn-danger ml-1 deleteAppo' appoId="${appointment.Id}" title='usuń'><i class='fas fa-trash'></i></button>`;
+                        } else if (data == false) {
+                            return `<button class='btn btn-sm btn-success ml-1 confirmAppo' appoId="${appointment.Id}" title='potwierdź'><i class='fas fa-check'></i></button>` +
+                                `<button class='btn btn-sm btn-danger ml-1 deleteAppo' appoId="${appointment.Id}" title='usuń'><i class='fas fa-trash'></i></button>`;
+                        } else {
+                            return `<button class='btn btn-sm btn-danger ml-1 deleteAppo' appoId="${appointment.Id}" title='usuń'><i class='fas fa-trash'></i></button>`;
                         }
                     }
                 }
@@ -237,5 +276,62 @@
 
             $("#calendar").html(htmlToDraw);
         }
+
+        $(document).on("click", ".deleteAppo", function () {
+            var appoId = $(this).attr("appoid");
+            var button = $(this);
+            bootbox.confirm({
+                message: "Czy na pewno chcesz usunąć ten termin?",
+                buttons: {
+                    confirm: {
+                        label: 'Usuń',
+                        className: 'btn-danger'
+                    },
+                    cancel: {
+                        label: 'Anuluj',
+                        className: 'btn-secondary'
+                    }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/api/calendar/deleteappointment/" + appoId,
+                            type: "DELETE"
+                        }).done(function (result) {
+                            button.closest("tr").remove();
+                        });
+                    }
+                }
+            });
+        });
+
+        $(document).on("click", ".confirmAppo", function () {
+            var appoId = $(this).attr("appoid");
+            var button = $(this);
+            bootbox.confirm({
+                message: "Czy na pewno chcesz potwierdzić ten termin?",
+                buttons: {
+                    confirm: {
+                        label: 'Potwierdź',
+                        className: 'btn-success'
+                    },
+                    cancel: {
+                        label: 'Anuluj',
+                        className: 'btn-secondary'
+                    }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/api/calendar/confirmappointment/" + appoId,
+                            type: "PATCH"
+                        }).done(function (result) {
+                            button.closest("tr").find(".isconfirmed").html("Potwierdzony");
+                            button.remove();
+                        });
+                    }
+                }
+            });
+        });
     </script>
 }

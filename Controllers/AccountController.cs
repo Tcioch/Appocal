@@ -191,9 +191,9 @@ namespace Appocal.Controllers
         {
             if (ModelState.IsValid)
             {
-                Schedule schedule = new Schedule();
                 Business business = new Business()
                 {
+                    Public = false,
                     Name = model.BusinessName,
                     Schedule = new Schedule(),
                     BusinessPage = new BusinessPage { PageContent = new PageContent() }

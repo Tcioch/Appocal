@@ -205,10 +205,14 @@ namespace Appocal.Controllers
             {
                 return View("Settings", model);
             }
+
             var userId = HttpContext.User.Identity.GetUserId();
             var user = _contex.Users.Include(u => u.Business.BusinessPage.PageContent).Single(u => u.Id == userId);
             user.Business.BusinessPage.PageContent.Title = model.Title;
             user.Business.BusinessPage.PageContent.Content = model.Content;
+            user.Business.ShortDescription = model.ShortDescription;
+            user.Business.Public = model.Public;
+
             if (_contex.SaveChanges() > 0)
             {
                 ViewBag.SuccessMessage = "Pomyślnie zapisano zmiany";
@@ -244,6 +248,8 @@ namespace Appocal.Controllers
             model.Name = user.Business.Name;
             model.Title = user.Business.BusinessPage.PageContent.Title;
             model.Content = user.Business.BusinessPage.PageContent.Content;
+            model.ShortDescription = user.Business.ShortDescription;
+            model.Public = user.Business.Public;
             model.Reviews = _contex.Users.Include(u => u.Business.Reviews).Single(u => u.Id == userId).Business.Reviews;
             foreach (var review in model.Reviews)
             {

@@ -37,7 +37,7 @@
                     @foreach (var review in Model.Reviews)
                     {
                         <tr>
-                            <td scope="row">@review.Client_Id<br />@review.ReviewDate.ToShortDateString()</td> @*Client_id tutaj jako Client_name*@
+                            <td scope="row">@Html.ActionLink(review.Client_Id, "newMessageForm","user", new { name=review.Client_Id }, new { })<br />@review.ReviewDate.ToShortDateString()</td> @*Client_id tutaj jako Client_name*@
                             <td>@review.Contents</td>
                             <td class="rating" nowrap>@review.Rating</td>
                         </tr>

@@ -225,6 +225,10 @@
     <Compile Include="Migrations\201910221911020_serviceidappo.Designer.cs">
       <DependentUpon>201910221911020_serviceidappo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201910272152336_update_client_Id.cs" />
+    <Compile Include="Migrations\201910272152336_update_client_Id.Designer.cs">
+      <DependentUpon>201910272152336_update_client_Id.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\HelperModels\AppointmentDataApi.cs" />
     <Compile Include="Models\HelperModels\AppointmentRequest.cs" />
@@ -248,6 +252,8 @@
     <Compile Include="ViewModels\BusinessRegisterViewModel.cs" />
     <Compile Include="ViewModels\BusinessDescriptionViewModel.cs" />
     <Compile Include="ViewModels\BusinessServicesViewModel.cs" />
+    <Compile Include="ViewModels\NameViewModel.cs" />
+    <Compile Include="ViewModels\ReviewViewModel.cs" />
     <Compile Include="ViewModels\ServiceViewModel.cs" />
     <Compile Include="ViewModels\WorkTimeViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
@@ -765,6 +771,7 @@
     <Content Include="Views\BusinessSite\Show.cshtml" />
     <Content Include="Views\BusinessSite\BusinessSiteOwner.cshtml" />
     <Content Include="Views\BusinessSite\Services.cshtml" />
+    <Content Include="Views\BusinessSite\AddReview.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -803,6 +810,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201910221911020_serviceidappo.resx">
       <DependentUpon>201910221911020_serviceidappo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910272152336_update_client_Id.resx">
+      <DependentUpon>201910272152336_update_client_Id.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

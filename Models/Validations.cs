@@ -16,4 +16,15 @@ namespace Appocal.Models
                 return false;
         }
     }
+
+    public class DivisibleBy0dot5 : ValidationAttribute
+    {
+        public override bool IsValid(object value)
+        {
+            if (float.Parse(value.ToString()) % 0.5f == 0)
+                return true;
+            else
+                return false;
+        }
+    }
 }

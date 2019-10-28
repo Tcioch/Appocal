@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Appocal.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -19,5 +20,6 @@ namespace Appocal.ViewModels
         [AllowHtmlAttribute]
         //[StringLength(10000, ErrorMessage = "{0} musi zawierać do {1} znaków.")]
         public string Content { get; set; }
+        public List<Review> Reviews { get; set; }
     }
 }

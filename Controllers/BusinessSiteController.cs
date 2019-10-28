@@ -1,6 +1,7 @@
 ﻿using Appocal.Models;
 using Appocal.ViewModels;
 using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -43,6 +44,53 @@ namespace Appocal.Controllers
                 return View("BusinessSiteOwner", model);
             else
                 return View(model);
+        }
+
+        [Authorize]
+        public ActionResult AddReviewForm(NameViewModel model)
+        {
+            ReviewViewModel modelToReturn = new ReviewViewModel { BusinessName = model.Name };
+            if (_contex.Businesses.Any(b => b.Name == model.Name))
+                return View("AddReview", modelToReturn);
+            else
+                return RedirectToAction("Index", "Home");
+        }
+
+        [Authorize]
+        public ActionResult AddReview(ReviewViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("AddReviewForm", model);
+            }
+            if (_contex.Businesses.Any(b => b.Name == model.BusinessName))
+            {
+                var clientId = HttpContext.User.Identity.GetUserId();
+                var review = new Review
+                {
+                    Client_Id = clientId,
+                    Rating = model.Rating,
+                    Contents = model.Review,
+                    ReviewDate = DateTime.Now
+                };
+
+                _contex.Businesses.Include(b => b.Reviews).SingleOrDefault(b => b.Name == model.BusinessName).Reviews.Add(review);
+
+                if (_contex.SaveChanges() > 0)
+                {
+                    TempData["message"] = "Recenzja została dodana!";
+                    return RedirectToAction("Show", new { name = model.BusinessName });
+                }
+                else
+                {
+                    TempData["message"] = "Coś poszło nie tak. Dodaj recenzje ponownie.";
+                    return RedirectToAction("Show", new { name = model.BusinessName });
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [Authorize(Roles = "Business")]
@@ -111,6 +159,7 @@ namespace Appocal.Controllers
                 return View("Services", modelToReturn);
             }
         }
+
         [Authorize(Roles = "Business")]
         public ActionResult DeleteService(ServiceViewModel model)
         {
@@ -179,7 +228,7 @@ namespace Appocal.Controllers
             model.Services = new List<ServiceViewModel>();
             foreach (var service in services)
             {
-                var singleService = new ServiceViewModel { Id= service.Id, Duration = service.Duration, Name = service.Name };
+                var singleService = new ServiceViewModel { Id = service.Id, Duration = service.Duration, Name = service.Name };
                 if (service.Active == true)
                 {
                     model.Services.Add(singleService);
@@ -195,6 +244,12 @@ namespace Appocal.Controllers
             model.Name = user.Business.Name;
             model.Title = user.Business.BusinessPage.PageContent.Title;
             model.Content = user.Business.BusinessPage.PageContent.Content;
+            model.Reviews = _contex.Users.Include(u => u.Business.Reviews).Single(u => u.Id == userId).Business.Reviews;
+            foreach (var review in model.Reviews)
+            {
+                review.Client_Id = _contex.Users.SingleOrDefault(u => u.Id == review.Client_Id).UserName;
+            }
+            model.Reviews = model.Reviews.OrderByDescending(r => r.ReviewDate).ToList();
             return model;
         }
     }

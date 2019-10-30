@@ -189,6 +189,7 @@
     <Compile Include="Controllers\CalendarController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\MessageController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Dtos\CalendarDayDto.cs" />
     <Compile Include="Global.asax.cs">
@@ -234,11 +235,45 @@
     <Compile Include="Migrations\201910282000176_bussiness-public.Designer.cs">
       <DependentUpon>201910282000176_bussiness-public.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201910282211320_message-box.cs" />
+    <Compile Include="Migrations\201910282211320_message-box.Designer.cs">
+      <DependentUpon>201910282211320_message-box.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910282218518_schedule.cs" />
+    <Compile Include="Migrations\201910282218518_schedule.Designer.cs">
+      <DependentUpon>201910282218518_schedule.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910282245425_update-appo.cs" />
+    <Compile Include="Migrations\201910282245425_update-appo.Designer.cs">
+      <DependentUpon>201910282245425_update-appo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910282249028_updates.cs" />
+    <Compile Include="Migrations\201910282249028_updates.Designer.cs">
+      <DependentUpon>201910282249028_updates.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910301355174_appoVMid.cs" />
+    <Compile Include="Migrations\201910301355174_appoVMid.Designer.cs">
+      <DependentUpon>201910301355174_appoVMid.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910301734558_update-msgbox.cs" />
+    <Compile Include="Migrations\201910301734558_update-msgbox.Designer.cs">
+      <DependentUpon>201910301734558_update-msgbox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910301737356_updmsgbox.cs" />
+    <Compile Include="Migrations\201910301737356_updmsgbox.Designer.cs">
+      <DependentUpon>201910301737356_updmsgbox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910301803082_update-msgboxdaasd.cs" />
+    <Compile Include="Migrations\201910301803082_update-msgboxdaasd.Designer.cs">
+      <DependentUpon>201910301803082_update-msgboxdaasd.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\HelperModels\AppointmentDataApi.cs" />
     <Compile Include="Models\HelperModels\AppointmentRequest.cs" />
     <Compile Include="Models\Service.cs" />
     <Compile Include="Models\Validations.cs" />
+    <Compile Include="ViewModels\MessageBoxViewModel.cs" />
+    <Compile Include="ViewModels\ConversationViewModel.cs" />
     <Compile Include="ViewModels\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -254,9 +289,12 @@
     <Compile Include="Models\Schedule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\BusinessListViewModel.cs" />
     <Compile Include="ViewModels\BusinessRegisterViewModel.cs" />
     <Compile Include="ViewModels\BusinessDescriptionViewModel.cs" />
     <Compile Include="ViewModels\BusinessServicesViewModel.cs" />
+    <Compile Include="ViewModels\AppointmentViewModel.cs" />
+    <Compile Include="ViewModels\ScheduleViewModel.cs" />
     <Compile Include="ViewModels\MessageViewModel.cs" />
     <Compile Include="ViewModels\NameViewModel.cs" />
     <Compile Include="ViewModels\ReviewViewModel.cs" />
@@ -746,7 +784,6 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
@@ -778,7 +815,10 @@
     <Content Include="Views\BusinessSite\BusinessSiteOwner.cshtml" />
     <Content Include="Views\BusinessSite\Services.cshtml" />
     <Content Include="Views\BusinessSite\AddReview.cshtml" />
-    <Content Include="Views\User\NewMessageForm.cshtml" />
+    <Content Include="Views\Message\NewMessageForm.cshtml" />
+    <Content Include="Views\User\BusinessList.cshtml" />
+    <Content Include="Views\User\Schedule.cshtml" />
+    <Content Include="Views\Message\MessageBox.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -823,6 +863,30 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201910282000176_bussiness-public.resx">
       <DependentUpon>201910282000176_bussiness-public.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910282211320_message-box.resx">
+      <DependentUpon>201910282211320_message-box.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910282218518_schedule.resx">
+      <DependentUpon>201910282218518_schedule.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910282245425_update-appo.resx">
+      <DependentUpon>201910282245425_update-appo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910282249028_updates.resx">
+      <DependentUpon>201910282249028_updates.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910301355174_appoVMid.resx">
+      <DependentUpon>201910301355174_appoVMid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910301734558_update-msgbox.resx">
+      <DependentUpon>201910301734558_update-msgbox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910301737356_updmsgbox.resx">
+      <DependentUpon>201910301737356_updmsgbox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910301803082_update-msgboxdaasd.resx">
+      <DependentUpon>201910301803082_update-msgboxdaasd.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

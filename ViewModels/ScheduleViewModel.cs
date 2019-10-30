@@ -8,12 +8,12 @@ using System.Web;
 
 namespace Appocal.ViewModels
 {
-    public class MessageViewModel
+    public class ScheduleViewModel
     {
-        public string SenderName { get; set; }
-        public string ReceiverName { get; set; }
-        [Required]
-        [Display(Name = "Wiadomość")]
-        public string Message { get; set; }
+        public List<AppointmentViewModel> Appointments { get; set; }
+        public ScheduleViewModel()
+        {
+            Appointments = new List<AppointmentViewModel>();
+        }
     }
 }

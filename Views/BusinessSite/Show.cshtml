@@ -1,8 +1,294 @@
 ﻿@model Appocal.ViewModels.BusinessDescriptionViewModel
 @{
-    ViewBag.Title = "Ustawienia";
+    ViewBag.Title = Model.Name;
 }
 
-    <h1>@Model.Name</h1>
+<h1>@Model.Name</h1>
+@Html.ActionLink("Napisz wiadomość", "newMessageForm", "Message", new { name = Model.Name }, new { @class="btn btn-primary"})
+@TempData["message"]
+<div class="containter">
+    <section>
+        <div class="row">
+            <div class="col-md-8">
+                @Html.Raw(Model.Content)
+            </div>
+            <div id="calendar" class="col-md-4 mt-2">
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Recenzje</h2>
+        @using (Html.BeginForm("AddReviewForm", "BusinessSite"))
+        {
+            @Html.HiddenFor(m => m.Name)
+            <input type="submit" class="btn btn-primary" value="Dodaj recenzje" />
+        }
+        @if (Model.Reviews.Any())
+        {
+            <table class="table table-striped table-hover col-12">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Użytkownik</th>
+                        <th scope="col">Recenzja</th>
+                        <th scope="col">Ocena</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var review in Model.Reviews)
+                    {
+                        <tr>
+                            <td scope="row">@Html.ActionLink(review.Client_Id, "newMessageForm", "Message", new { name = review.Client_Id }, new { })<br />@review.ReviewDate.ToShortDateString()</td> @*Client_id tutaj jako Client_name*@
+                            <td>@review.Contents</td>
+                            <td class="rating" nowrap>@review.Rating</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        <div>
+        </div>
+    </section>
+</div>
 
-    @Html.Raw(Model.Content)
+<div class="modal fade" id="makeAppo" tabindex="-1" role="dialog" aria-labelledby="makeAppointment" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="makeAppoTitle">Umów spotkanie</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/Calendar/SetAppointment" method="post">
+                    <div class="form-group">
+                        <label for="serviceSelect">Wybierz usługę</label>
+                        <select class="form-control" id="serviceSelect" name="serviceId">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="appoTimeSelect">Wybierz godzinę</label>
+                        <select class="form-control" id="appoTimeSelect" name="timeOfMeetingWithId" disabled>
+                        </select>
+                    </div>
+                    <input type="hidden" id="appoDateTime" name="dateOfMeeting" value="" />
+                    <input type="hidden" id="businessName" name="businessName" value="@Model.Name" />
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                        <input type="submit" class="btn btn-success" id="setNewAppointment" value="Umów" disabled />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        var nowMonth = new Date().getMonth() + 1;
+        var nowYear = new Date().getFullYear();
+        var nowDay = new Date().getDate();
+
+        $(document).ready(function () {
+            drawCalendar(nowMonth, nowYear);
+
+            $(".rating").each(function () {
+                var rating = parseFloat($(this).html().replace(',', '.'));
+                var fullStars = Math.floor(rating);
+                if (rating % 1 == 0.5) halfStar = 1;
+                else halfStar = 0;
+                var emptyStars = 5 - fullStars - halfStar;
+                $(this).html("<i class='fas fa-star'></i>".repeat(fullStars) + "<i class='fas fa-star-half-alt'></i>".repeat(halfStar) + "<i class='far fa-star'></i>".repeat(emptyStars))
+
+            });
+        });
+
+        function drawCalendar(month, year) {
+            var arrayOfDaysWithAppo;
+            previousMonthYear = year
+            previousMonth = month - 1;
+            nextMonthYear = year;
+            nextMonth = month + 1;
+            if (month == 1) {
+                previousMonth = 12;
+                previousMonthYear = year - 1;
+            }
+            if (month == 12) {
+                nextMonth = 1;
+                nextMonthYear = year + 1;
+            }
+
+            $.ajax({
+                url: "/api/calendar",
+                async: false,
+                type: "GET",
+                data: {
+                    month: month,
+                    year: year,
+                    businessName: "@Model.Name"
+                }
+            }).done(function (result) {
+                arrayOfDaysWithAppo = result;
+
+            })
+            var htmlToDraw = "";
+            if ((nowMonth > 1 && nowMonth == previousMonth + 1 && nowYear == previousMonthYear)
+                || (nowMonth == 1 && previousMonth == 12 && previousMonthYear == nowYear - 1)) {
+                htmlToDraw += "<table class='table table-bordered text-center'>" +
+                "<tr>" +
+                `<th scope='col'><i class='fas fa-chevron-left text-black-50'></i></th>` +
+                "<th scope='col' colspan='5'>";
+            } else {
+                 htmlToDraw += "<table class='table table-bordered text-center'>" +
+                "<tr>" +
+                `<th scope='col' onclick='drawCalendar(${previousMonth},${previousMonthYear})' style='cursor: pointer'><i class='fas fa-chevron-left'></i></th>` +
+                "<th scope='col' colspan='5'>";
+            }
+
+            var monthNames = ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec",
+                "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"];
+            htmlToDraw += monthNames[month - 1] + " " + year;
+
+            htmlToDraw += "</th>" +
+                `<th scope='col' onclick='drawCalendar(${nextMonth},${nextMonthYear})' style='cursor: pointer'><i class='fas fa-chevron-right'></i></th>` +
+                "</tr>" +
+                "<tr>" +
+                "<th scope='col'>Pon</th>" +
+                "<th scope='col'>Wt</th>" +
+                "<th scope='col'>Śr</th>" +
+                "<th scope='col'>Czw</th>" +
+                "<th scope='col'>Pt</th>" +
+                "<th scope='col'>Sb</th>" +
+                "<th scope='col'>Nd</th>" +
+                "</tr>";
+
+            var date = new Date(year + "-" + month + "-" + "01");
+            var numberOfDaysInMonth = new Date(year, month, 0).getDate();
+            var firstDayOfMonth = date.getDay();
+
+            if (firstDayOfMonth == 0)
+                firstDayOfMonth = 7;
+            var fieldsInCalendar = numberOfDaysInMonth + (firstDayOfMonth - 1);
+            var numberOfRows = Math.ceil(fieldsInCalendar / 7);
+
+            var dayInCalendar = 1;
+            var rowInCalendar = 1;
+            while (rowInCalendar <= numberOfRows) {
+                htmlToDraw += "<tr>";
+                if (rowInCalendar == 1) {
+                    for (i = 1; i <= 7; i++) {
+                        var month2digit = ("0" + (date.getMonth() + 1)).slice(-2);
+                        var day2digit = ("0" + dayInCalendar).slice(-2);
+                        var appDate = String(date.getFullYear()) + month2digit + day2digit;
+
+                        if (i < firstDayOfMonth)
+                            htmlToDraw += "<th></th>";
+                        else {
+                            var htmlInCell;
+                            if (dayInCalendar <= nowDay && month == nowMonth && year == nowYear) {
+                                htmlInCell = `<a class='btn btn-light w-100 disabled'>${dayInCalendar}</a>`;
+                            } else {
+                                if (arrayOfDaysWithAppo.some(a => a.Day == dayInCalendar)) {
+                                    if (arrayOfDaysWithAppo.find(a => a.Day == dayInCalendar).Status == "PartlyBooked")
+                                        htmlInCell = `<a href='#' onClick="openModal(${appDate})" class='btn btn-warning w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                                    else if (arrayOfDaysWithAppo.find(a => a.Day == dayInCalendar).Status == "FullyBooked")
+                                        htmlInCell = `<a href='#' disabled class='btn btn-danger w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                                    else
+                                        htmlInCell = `<a href='#' onClick="openModal(${appDate})" class='btn btn-success w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                                } else {
+                                htmlInCell = `<a class='btn btn-secondary w-100 disabled'>${dayInCalendar}</a>`;
+                                }
+                            }
+
+                            htmlToDraw += `<td>${htmlInCell}</td>`;
+                            dayInCalendar++;
+                        }
+                    }
+                }
+                else {
+                    for (i = 1; i <= 7; i++) {
+                        var month2digit = ("0" + (date.getMonth() + 1)).slice(-2);
+                        var day2digit = ("0" + dayInCalendar).slice(-2);
+                        var appDate = String(date.getFullYear()) + month2digit + day2digit;
+
+                        var htmlInCell;
+                        if (dayInCalendar <= nowDay && month == nowMonth && year == nowYear) {
+                            htmlInCell = `<a class='btn btn-light w-100 disabled'>${dayInCalendar}</a>`;
+                        } else {
+                            if (arrayOfDaysWithAppo.some(a => a.Day == dayInCalendar)) {
+                                if (arrayOfDaysWithAppo.find(a => a.Day == dayInCalendar).Status == "PartlyBooked")
+                                    htmlInCell = `<a href='#' onClick="openModal(${appDate})" class='btn btn-success w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                                else if (arrayOfDaysWithAppo.find(a => a.Day == dayInCalendar).Status == "FullyBooked")
+                                    htmlInCell = `<a href='#' disabled class='btn btn-danger w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                                else
+                                    htmlInCell = `<a href='#' onClick="openModal(${appDate})" class='btn btn-success w-100' appDate='${appDate}'>${dayInCalendar}</a>`;
+                            }
+                            else {
+                                htmlInCell = `<a class='btn btn-secondary w-100 disabled'>${dayInCalendar}</a>`;
+                            }
+                        }
+
+                        htmlToDraw += `<td>${htmlInCell}</td>`;
+                        dayInCalendar++;
+                        if (dayInCalendar > numberOfDaysInMonth) break;
+                    }
+                }
+                htmlToDraw += "</tr>";
+                rowInCalendar++;
+            }
+            htmlToDraw += "</table>";
+
+            $("#calendar").html(htmlToDraw);
+        }
+
+        function openModal(date) {
+            $('#makeAppoTitle').html(date.toString().substr(6, 2) + "-" + date.toString().substr(4, 2) + "-" + date.toString().substr(0, 4));
+            $('#serviceSelect').empty()
+            $('#serviceSelect').prepend('<option disabled="disabled" selected>-</option>');
+            $('#appoTimeSelect').empty();
+            $('#appoTimeSelect').prop('disabled', true);
+            $('#setNewAppointment').prop('disabled', true);
+            $('#appoTimeSelect').prepend('<option disabled="disabled" selected>-</option>');
+            $('#appoDateTime').val(date);
+
+            $.ajax({
+                url: "/api/business/getservices",
+                type: "GET",
+                data: { businessName: "@Model.Name" }
+            }).done(function (services) {
+
+                services.forEach(function (service) {
+                    var selectDesc = service.Name + ` | ${service.Duration} minut.`;
+                    $('#serviceSelect').append(new Option(selectDesc, service.Id));
+                });
+            })
+            $('#makeAppo').modal('show');
+        };
+
+        $(document).on('change', '#serviceSelect', function () {
+            $('#appoTimeSelect').empty();
+            $('#appoTimeSelect').prepend('<option disabled="disabled" selected>-</option>');
+             $.ajax({
+                url: "/api/appointments/getavailablehours",
+                type: "POST",
+                 data: {
+                     ServiceId: this.value.toString(),
+                     BusinessName: "@Model.Name",
+                     Date: $('#appoDateTime').val().toString()
+                 }
+            }).done(function (availableHours) {
+                availableHours.forEach(function (availableHour) {
+                    var selectDesc = availableHour.substr(0, 2) + ":" + availableHour.substr(2, 2);
+                    $('#appoTimeSelect').append(new Option(selectDesc, availableHour));
+                });
+                $('#appoTimeSelect').prop('disabled', false);
+            })
+        });
+
+        $(document).on('change', '#appoTimeSelect', function () {
+            $('#setNewAppointment').prop('disabled', false);
+        });
+    </script>
+}

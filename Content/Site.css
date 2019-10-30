@@ -36,3 +36,8 @@ input.error {
 table{
     border-spacing: 0 0;
 }
+
+.widhOfContent {
+    width: 1%;
+    white-space: nowrap;
+}

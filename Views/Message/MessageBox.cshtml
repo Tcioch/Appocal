@@ -1,0 +1,21 @@
+﻿@model Appocal.ViewModels.MessageBoxViewModel
+@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "Skrzynka odbiorcza";
+}
+
+<h3>Skrzynka odbiorcza</h3>
+<div class="containter">
+    <div class="col-3">
+        @foreach (var conv in Model.Conversations)
+        {
+            bool seen;
+            if (User.Identity.GetUserName() == conv.User1)
+            { seen = conv.SeenBy1; } else { seen = conv.SeenBy2; }
+            <div class="alert alert-@(seen?"secondary":"warning")">
+                <strong>@(User.Identity.GetUserName() == conv.User1 ? conv.User2 : conv.User1)</strong><br />
+                @conv.Messages.Last().Message.Substring(0,15) ...
+            </div>
+        }
+    </div>
+</div>

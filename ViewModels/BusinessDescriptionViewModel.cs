@@ -22,6 +22,7 @@ namespace Appocal.ViewModels
         [Required]
         public bool Public { get; set; }
         [Required]
+        [Display(Name = "Krótki opis")]
         [StringLength(120, ErrorMessage = "{0} musi zawierać od {2} do {1} znaków.", MinimumLength = 25)]
         public string ShortDescription { get; set; }
         public List<Review> Reviews { get; set; }

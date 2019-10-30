@@ -11,14 +11,11 @@
                 <li class="nav-item">
                     @Html.ActionLink("Strona główna", "Index", "Home", null, new { @class = "nav-link" })
                 </li>
-                <li class="nav-item">
-                    @Html.ActionLink("Kontakt", "Contact", "Home", null, new { @class = "nav-link" })
-                </li>
-                <li class="nav-item">
-                    @Html.ActionLink("Kalendarz", "Index", "Calendar", null, new { @class = "nav-link" })
-                </li>
                 @if (User.IsInRole("Business"))
                 {
+                    <li class="nav-item">
+                        @Html.ActionLink("Kalendarz", "Index", "Calendar", null, new { @class = "nav-link" })
+                    </li>
                     <li class="nav-item">
                         @Html.ActionLink("Ustawienia strony", "Settings", "BusinessSite", null, new { @class = "nav-link" })
                     </li>
@@ -26,10 +23,20 @@
                         @Html.ActionLink("Usługi", "Services", "BusinessSite", null, new { @class = "nav-link" })
                     </li>
                 }
+
+                @if (User.IsInRole("Individual"))
+                {
+                    <li class="nav-item">
+                        @Html.ActionLink("Spis firm", "BusinessList", "User", null, new { @class = "nav-link" })
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink("Twoje wizyty", "Schedule", "User", null, new { @class = "nav-link" })
+                    </li>
+                }
                 @if (Request.IsAuthenticated)
                 {
                     <li class="nav-item">
-                        @Html.ActionLink("Wiadomości", "Index", "Messenger", null, new { @class = "nav-link" })
+                        @Html.ActionLink("Wiadomości", "MessageBox", "Message", null, new { @class = "nav-link" })
                     </li>
                 }
             </ul>

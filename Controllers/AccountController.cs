@@ -161,12 +161,13 @@ namespace Appocal.Controllers
             if (ModelState.IsValid)
             {
                 Schedule schedule = new Schedule();
-                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Schedule = schedule};
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Schedule = schedule, MessageBox = new MessageBox()};
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    var currentUser = UserManager.FindByName(user.UserName);
+                    UserManager.AddToRole(currentUser.Id, "Individual");
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                    Roles.AddUserToRole(model.UserName, "Individual");
                     // Aby uzyskać więcej informacji o sposobie włączania potwierdzania konta i resetowaniu hasła, odwiedź stronę https://go.microsoft.com/fwlink/?LinkID=320771
                     // Wyślij wiadomość e-mail z tym łączem
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
@@ -198,7 +199,7 @@ namespace Appocal.Controllers
                     Schedule = new Schedule(),
                     BusinessPage = new BusinessPage { PageContent = new PageContent() }
                 };
-                var user = new ApplicationUser { UserName = model.BusinessName, Email = model.Email, Business = business };
+                var user = new ApplicationUser { UserName = model.BusinessName, Email = model.Email, Business = business, MessageBox = new MessageBox()};
               
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)

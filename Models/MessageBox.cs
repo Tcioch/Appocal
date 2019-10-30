@@ -9,10 +9,5 @@ namespace Appocal.Models
     {
         public int Id { get; set; }
         public List<Conversation> Conversations { get; set; }
-
-        public MessageBox(ApplicationUser user)
-        {
-
-        }
     }
 }

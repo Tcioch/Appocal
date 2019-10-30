@@ -13,8 +13,12 @@ namespace Appocal.Models
         public int Duration { get; set; }
         public bool? Available { get; set; }
         public string Client_Id{ get; set; }
+        public string Business_Name{ get; set; }
         public bool IsConfirmed { get; set; }
         public int? Service_id { get; set; }
+        public ICollection<Schedule> Schedule { get; set; }
+
+
         public Appointment Clone()
         {
             return (Appointment)this.MemberwiseClone();

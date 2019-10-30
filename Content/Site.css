@@ -41,3 +41,23 @@ table{
     width: 1%;
     white-space: nowrap;
 }
+
+.message-right {
+    clear: both;
+    float: right;
+    padding: 10px;
+    margin: 5px;
+    background: #dedede;
+    border: #000;
+    border-radius: 15px;
+}
+
+.message-left {
+    clear: both;
+    float: left;
+    padding: 10px;
+    margin: 5px;
+    background: #4f95ea;
+    border: #000;
+    border-radius: 15px;
+}

@@ -87,12 +87,14 @@ namespace Appocal.Controllers
 
         public ActionResult SendMessage(MessageViewModel model)
         {
+            var userId = HttpContext.User.Identity.GetUserId();
+            var userName = _contex.Users.Single(u => u.Id == userId).UserName;
             Conversation conversation;
             if (_contex.Conversations.Any(c => (c.User1 == model.SenderName && c.User2 == model.ReceiverName) || (c.User1 == model.ReceiverName && c.User2 == model.SenderName)))
             {
                 conversation = _contex.Conversations.Include(c => c.Messages).First(c => (c.User1 == model.SenderName && c.User2 == model.ReceiverName) || (c.User1 == model.ReceiverName && c.User2 == model.SenderName));
-                conversation.SeenBy1 = false;
-                conversation.SeenBy2 = false;
+                conversation.SeenBy1 = userName == conversation.User1 ? true : false;
+                conversation.SeenBy2 = userName == conversation.User2 ? true : false;
             }
             else
             {
@@ -100,8 +102,8 @@ namespace Appocal.Controllers
                 {
                     User1 = model.ReceiverName,
                     User2 = model.SenderName,
-                    SeenBy1 = false,
-                    SeenBy2 = false,
+                    SeenBy1 = userName == model.ReceiverName ? true : false,
+                    SeenBy2 = userName == model.SenderName ? true : false,
                     Messages = new List<Message>()
                 };
                 _contex.Users.Include(u => u.MessageBox.Conversations).Single(u => u.UserName == model.ReceiverName).MessageBox.Conversations.Add(conversation);
@@ -121,12 +123,12 @@ namespace Appocal.Controllers
             if (_contex.SaveChanges() > 0)
             {
                 TempData["message"] = "Wiadomość została wysłana!";
-                return View(); /////////////////////////////////////////////////ZMIENIĆ
+                return RedirectToAction("MessageBox");
             }
             else
             {
                 TempData["message"] = "Coś poszło nie tak. Wiadomość nie została wysłana.";
-                return View(); /////////////////////////////////////////////////ZMIENIĆ
+                return RedirectToAction("NewMessageForm", model.ReceiverName);
             }
         }
     }

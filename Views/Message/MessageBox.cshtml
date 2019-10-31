@@ -27,33 +27,63 @@
                 </div>
             }
         </div>
-        <div class="col-9" id="messages">
-            @{var receiver = Model.Conversations[0].User1 == user ? Model.Conversations[0].User2 : Model.Conversations[0].User1; }
-            <h3>Rozmowa z @receiver</h3>
-            @foreach (var msg in Model.Conversations[0].Messages)
-            {
-                var floating = msg.SenderName == user ? "message-right" : "message-left";
-                <div class='@floating'>@msg.Message</div>
-            }
+        <div class="col-9" id="msgLeftCol">
+                @{var receiver = Model.Conversations[0].User1 == user ? Model.Conversations[0].User2 : Model.Conversations[0].User1; }
+                <h3>Rozmowa z @receiver</h3>
+            <div class="col-12" id="messages">
+                @foreach (var msg in Model.Conversations[0].Messages)
+                {
+                    var floating = msg.SenderName == user ? "message-right" : "message-left";
+                    <div class='@floating'>@msg.Message</div>
+                }
+            </div>
+            <div class="msgBox">
+                <form action="/Message/SendMessage" method="post">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="Message" required />
+                        <input name="ReceiverName" type="hidden" value="@receiver">
+                        <input name="SenderName" type="hidden" value="@user">
+                        <span class="input-group-btn"><button type="submit" class="btn btn-primary">Wyślij</button></span>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 
 @section Scripts{
     <script>
-        var conversations = @Html.Raw(Json.Encode(Model.Conversations))
+        var conversations = @Html.Raw(Json.Encode(Model.Conversations));
+
+        $(document).ready(function () {
+            scrolldown();
+        })
 
         $(document).on("click", ".conversation", function () {
             var convId = $(this).attr("convId");
-            $("#messages").empty();
+            $("#msgLeftCol").empty();
             var receiver = conversations[convId].User1 == "@user" ? conversations[convId].User2 : conversations[convId].User1;
-            $("#messages").append(`<h3>Rozmowa z ${receiver}</h3>`)
+            $("#msgLeftCol").append(`<h3>Rozmowa z ${receiver}</h3>`)
+            $("#msgLeftCol").append("<div class='col-12' id='messages'></div>");
             conversations[convId].Messages.forEach(function (msg) {
                 var floating;
                 msg.SenderName == "@user" ? floating = "message-right" : floating = "message-left";
                 var stringToAdd = `<div class='${floating}'>${msg.Message}</div>`;
                 $("#messages").append(stringToAdd);
             });
+
+            var msgBox = "<div class='msgBox'><form action='/Message/SendMessage' method='post'><div class='input-group'>"
+                + "<input type = 'text' name='Message' class='form-control' />"
+                + `<input name='ReceiverName' type='hidden' value='${receiver}'>`
+                + "<input name='SenderName' type='hidden' value='@user'>"
+                + "<span class='input-group-btn'><button type='submit' class='btn btn-primary'>Wyślij</button></span>"
+                + "</div></form></div>";
+            $("#msgLeftCol").append(msgBox);
+            scrolldown();
         });
+
+        function scrolldown() {
+            $("#messages").scrollTop($("#messages")[0].scrollHeight);
+        }
     </script>
 }

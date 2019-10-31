@@ -33,7 +33,7 @@ namespace Appocal.Controllers
                 Conversations = new List<ConversationViewModel>()
             };
 
-            messageBox.Conversations = messageBox.Conversations.OrderBy(c => c.Messages.Last().MessageDate).ToList();
+            messageBox.Conversations = messageBox.Conversations.OrderByDescending(c => c.Messages.Last().MessageDate).ToList();
 
             foreach(var conv in messageBox.Conversations)
             {
@@ -89,8 +89,7 @@ namespace Appocal.Controllers
         {
             var userId = HttpContext.User.Identity.GetUserId();
             var userName = _contex.Users.Single(u => u.Id == userId).UserName;
-            Conversation conversation;
-            if (_contex.Conversations.Any(c => (c.User1 == model.SenderName && c.User2 == model.ReceiverName) || (c.User1 == model.ReceiverName && c.User2 == model.SenderName)))
+            Conversation conversation;            if (_contex.Conversations.Any(c => (c.User1 == model.SenderName && c.User2 == model.ReceiverName) || (c.User1 == model.ReceiverName && c.User2 == model.SenderName)))
             {
                 conversation = _contex.Conversations.Include(c => c.Messages).First(c => (c.User1 == model.SenderName && c.User2 == model.ReceiverName) || (c.User1 == model.ReceiverName && c.User2 == model.SenderName));
                 conversation.SeenBy1 = userName == conversation.User1 ? true : false;
@@ -122,12 +121,10 @@ namespace Appocal.Controllers
 
             if (_contex.SaveChanges() > 0)
             {
-                TempData["message"] = "Wiadomość została wysłana!";
                 return RedirectToAction("MessageBox");
             }
             else
             {
-                TempData["message"] = "Coś poszło nie tak. Wiadomość nie została wysłana.";
                 return RedirectToAction("NewMessageForm", model.ReceiverName);
             }
         }

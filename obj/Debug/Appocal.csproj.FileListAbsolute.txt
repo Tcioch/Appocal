@@ -133,3 +133,11 @@ C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migration
 C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.serviceidappo.resources
 C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.update_client_Id.resources
 C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.bussinesspublic.resources
+C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.messagebox.resources
+C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.schedule.resources
+C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.updateappo.resources
+C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.updates.resources
+C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.appoVMid.resources
+C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.updatemsgbox.resources
+C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.updmsgbox.resources
+C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.updatemsgboxdaasd.resources

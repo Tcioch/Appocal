@@ -89,15 +89,16 @@ namespace Appocal.Controllers.API
 
 
         [HttpDelete]
-        [Authorize(Roles = "Business")]
+        [Authorize]
         public IHttpActionResult DeleteAppointment(int id)
         {
             
             var userId = HttpContext.Current.User.Identity.GetUserId();
+            var appointmentToDelete = _contex.Appointments.SingleOrDefault(a => a.Id == id);
+            var name = _contex.Users.Single(u => u.Id == userId).UserName;
 
-            if (_contex.Users.Include(u => u.Business.Schedule.Appointments).SingleOrDefault(u => u.Id == userId).Business.Schedule.Appointments.Any(a => a.Id == id))
+            if (appointmentToDelete.Client_Id == userId || appointmentToDelete.Business_Name == name)
             {
-                var appointmentToDelete = _contex.Appointments.Single(a => a.Id == id);
                 _contex.Appointments.Remove(appointmentToDelete);
                 if (_contex.SaveChanges() > 0)
                 {

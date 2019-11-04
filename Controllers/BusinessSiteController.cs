@@ -46,7 +46,7 @@ namespace Appocal.Controllers
                 return View(model);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Individual")]
         public ActionResult AddReviewForm(NameViewModel model)
         {
             ReviewViewModel modelToReturn = new ReviewViewModel { BusinessName = model.Name };
@@ -56,7 +56,7 @@ namespace Appocal.Controllers
                 return RedirectToAction("Index", "Home");
         }
 
-        [Authorize]
+        [Authorize(Roles = "Individual")]
         public ActionResult AddReview(ReviewViewModel model)
         {
             if (!ModelState.IsValid)

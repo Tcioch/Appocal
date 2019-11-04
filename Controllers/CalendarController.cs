@@ -32,9 +32,9 @@ namespace Appocal.Controllers
         public ActionResult SetAppointment(AppointmentDataApi appoData)
         {
             var userId = HttpContext.User.Identity.GetUserId();
-            var businessAppointments = _contex.Businesses.Include(b => b.Schedule.Appointments)
-                                    .SingleOrDefault(b => b.Name == appoData.BusinessName)
-                                    .Schedule.Appointments;
+            var business = _contex.Businesses.Include(b => b.Schedule.Appointments)
+                                    .SingleOrDefault(b => b.Name == appoData.BusinessName);
+            var businessAppointments = business.Schedule.Appointments;
             var workTime = businessAppointments.FirstOrDefault(a => a.Id == int.Parse(appoData.TimeOfMeetingWithId.Split('_').Last()));
 
             DateTime newAppointmentDate = new DateTime(int.Parse(appoData.DateOfMeeting.ToString().Substring(0, 4)),
@@ -46,6 +46,7 @@ namespace Appocal.Controllers
             {
                 AppointmentDate = newAppointmentDate,
                 Client_Id = userId,
+                Business_Name = business.Name,
                 Duration = _contex.Services.Single(s => s.Id == appoData.ServiceId).Duration,
                 Available = false,
                 IsConfirmed = false,
@@ -92,6 +93,8 @@ namespace Appocal.Controllers
                 businessAppointments.Remove(workTime);
                 businessAppointments.Add(newAppointment);
             }
+
+            _contex.Users.Include(u => u.Schedule.Appointments).Single(u => u.Id == userId).Schedule.Appointments.Add(newAppointment);
 
             if (_contex.SaveChanges() > 0)
                 TempData["message"] = "Spotkanie zostało pomyślnie umówione!";

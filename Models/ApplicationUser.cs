@@ -10,6 +10,7 @@ namespace Appocal.Models
     {
         public Business Business { get; set; }
         public Schedule Schedule { get; set; }
+        public MessageBox MessageBox { get; set; }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Element authenticationType musi pasować do elementu zdefiniowanego w elemencie CookieAuthenticationOptions.AuthenticationType

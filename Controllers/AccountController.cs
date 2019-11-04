@@ -167,6 +167,7 @@ namespace Appocal.Controllers
                 {
                     var currentUser = UserManager.FindByName(user.UserName);
                     UserManager.AddToRole(currentUser.Id, "Individual");
+                    new MessageController().MessageFromAdmin(user.UserName, "Witamy na stronie AppoCal. Mamy nadzieję, że nasza aplikacja uprości Ci szukanie oraz rezerwację wizyt u różnych specjalistów.");
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                     // Aby uzyskać więcej informacji o sposobie włączania potwierdzania konta i resetowaniu hasła, odwiedź stronę https://go.microsoft.com/fwlink/?LinkID=320771
                     // Wyślij wiadomość e-mail z tym łączem
@@ -206,6 +207,7 @@ namespace Appocal.Controllers
                 {
                     var currentUser = UserManager.FindByName(user.UserName);
                     UserManager.AddToRole(currentUser.Id, "Business");
+                    new MessageController().MessageFromAdmin(user.UserName, "Witamy na stronie AppoCal. Mamy nadzieję, że nasza aplikacja pomoże Ci uporządkować swoje wizyty. Pamietaj, aby dobrze opisać swoją firmę oraz dodać usługi jakie wykonujesz.");
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                     // Aby uzyskać więcej informacji o sposobie włączania potwierdzania konta i resetowaniu hasła, odwiedź stronę https://go.microsoft.com/fwlink/?LinkID=320771
                     // Wyślij wiadomość e-mail z tym łączem

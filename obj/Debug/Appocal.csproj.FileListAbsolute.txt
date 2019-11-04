@@ -117,7 +117,6 @@ C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\bin\pl\System.Web.Http.WebH
 C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\bin\pl\Microsoft.AspNet.Identity.Core.resources.dll
 C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\bin\pl\Microsoft.AspNet.Identity.Owin.resources.dll
 C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\bin\pl\Microsoft.AspNet.Identity.EntityFramework.resources.dll
-C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.csprojAssemblyReference.cache
 C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.csproj.CoreCompileInputs.cache
 C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.csproj.CopyComplete
 C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.dll
@@ -141,3 +140,5 @@ C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migration
 C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.updatemsgbox.resources
 C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.updmsgbox.resources
 C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\obj\Debug\Appocal.Migrations.updatemsgboxdaasd.resources
+C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\bin\Appocal.dll.CodeAnalysisLog.xml
+C:\Users\tomas\source\repos\Appocal2\Appocal\Appocal\bin\Appocal.dll.lastcodeanalysissucceeded

@@ -8,14 +8,18 @@
     ViewBag.Title = "Skrzynka odbiorcza";
 }
 
-<h3>Skrzynka odbiorcza</h3>
+<h3 class="d-none d-md-block">Skrzynka odbiorcza</h3>
 @TempData["message"]
 <div class="containter">
+
     <div class="row">
-        <div class="col-3">
+        <button class="m-2 w-100  d-md-none btn btn-primary" id="chooseConvbtn" opened="0">
+            Wybierz rozmówcę <i class="fas fa-caret-down"></i>
+        </button>
+
+        <div id="conversations" class="d-none d-md-block col-12 col-md-3">
             @for (int i = 0; i < Model.Conversations.Count(); i++)
             {
-                ;
                 if (user == Model.Conversations[i].User1)
                 { seen = Model.Conversations[i].SeenBy1; }
                 else { seen = Model.Conversations[i].SeenBy2; }
@@ -27,17 +31,17 @@
                 </div>
             }
         </div>
-        <div class="col-9" id="msgLeftCol">
+        <div class="col-12 col-md-9 conv-box pb-2" id="msgRightCol">
                 @{var receiver = Model.Conversations[0].User1 == user ? Model.Conversations[0].User2 : Model.Conversations[0].User1; }
                 <h3>Rozmowa z @receiver</h3>
             <div class="col-12" id="messages">
                 @foreach (var msg in Model.Conversations[0].Messages)
                 {
                     var floating = msg.SenderName == user ? "message-right" : "message-left";
-                    <div class='@floating'>@msg.Message</div>
+                    <div class='@floating'>@Html.Raw(msg.Message)</div>
                 }
             </div>
-            <div class="msgBox">
+            <div class="msgBox mt-2">
                 <form action="/Message/SendMessage" method="post">
                     <div class="input-group">
                         <input type="text" class="form-control" name="Message" required />
@@ -59,12 +63,25 @@
             scrolldown();
         })
 
+        $(document).on('click', "#chooseConvbtn", function () {
+            if ($(this).attr("opened") == 0) {
+                $('#conversations').removeClass("d-none")
+                $(this).html("Schowaj rozmówców <i class='fas fa-caret-up'></i>")
+                $(this).attr("opened", 1)
+            } else {
+                $('#conversations').addClass("d-none")
+                $(this).html("Wybierz rozmówcę <i class='fas fa-caret-down'></i>")
+                $(this).attr("opened", 0)
+            }
+        })
+
         $(document).on("click", ".conversation", function () {
+            var thisDiv = $(this);
             var convId = $(this).attr("convId");
-            $("#msgLeftCol").empty();
+            $("#msgRightCol").empty();
             var receiver = conversations[convId].User1 == "@user" ? conversations[convId].User2 : conversations[convId].User1;
-            $("#msgLeftCol").append(`<h3>Rozmowa z ${receiver}</h3>`)
-            $("#msgLeftCol").append("<div class='col-12' id='messages'></div>");
+            $("#msgRightCol").append(`<h3>Rozmowa z ${receiver}</h3>`)
+            $("#msgRightCol").append("<div class='col-12' id='messages'></div>");
             conversations[convId].Messages.forEach(function (msg) {
                 var floating;
                 msg.SenderName == "@user" ? floating = "message-right" : floating = "message-left";
@@ -72,18 +89,30 @@
                 $("#messages").append(stringToAdd);
             });
 
-            var msgBox = "<div class='msgBox'><form action='/Message/SendMessage' method='post'><div class='input-group'>"
+            var msgBox = "<div class='msgBox mt-2'><form action='/Message/SendMessage' method='post'><div class='input-group'>"
                 + "<input type = 'text' name='Message' class='form-control' />"
                 + `<input name='ReceiverName' type='hidden' value='${receiver}'>`
                 + "<input name='SenderName' type='hidden' value='@user'>"
                 + "<span class='input-group-btn'><button type='submit' class='btn btn-primary'>Wyślij</button></span>"
                 + "</div></form></div>";
-            $("#msgLeftCol").append(msgBox);
+            $("#msgRightCol").append(msgBox);
+
             scrolldown();
+
+            $.ajax({
+                url: "/api/message/SetSeen/" + receiver,
+                type: "PATCH",
+                async: false,
+            }).done(function () {
+                checkUnreadMsg();
+                thisDiv.removeClass("alert-warning");
+                thisDiv.addClass("alert-secondary");
+            });
         });
 
         function scrolldown() {
             $("#messages").scrollTop($("#messages")[0].scrollHeight);
         }
+
     </script>
 }

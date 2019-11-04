@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 
 namespace Appocal.Controllers
 {
@@ -14,7 +15,19 @@ namespace Appocal.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            if (User.IsInRole("Business"))
+            {
+                return RedirectToAction("Index", "Calendar");
+            }
+            else if (User.IsInRole("Individual"))
+            {
+                return RedirectToAction("BusinessList", "User");
+            }
+            else
+            {
+                return View();
+            }
+
         }
     }
 }

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - Appocal</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
@@ -12,7 +12,7 @@
 
     @Html.Partial("_Navbar")
 
-    <div class="container body-content">
+    <div class="container body-content pt-2">
         @RenderBody()
         <hr />
         <footer>
@@ -22,5 +22,25 @@
 
     @Scripts.Render("~/bundles/lib")
     @RenderSection("scripts", required: false)
+    <script>
+        $(document).ready(function () {
+            checkUnreadMsg();
+        })
+
+        function checkUnreadMsg() {
+            if ("@Request.IsAuthenticated" == "True") {
+                $.ajax({
+                    url: "/api/message/GetNumberOfUnread",
+                    type: "GET",
+                    async: false,
+                }).done(function (number) {
+                    if (number > 0) {
+                        $("#msgLink").addClass("haveMsg")
+                    }
+                    $("#msgLink").text(`Wiadomości[${number}]`)
+                });
+            }
+        }
+    </script>
 </body>
 </html>

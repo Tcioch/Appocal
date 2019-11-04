@@ -84,7 +84,7 @@ namespace Appocal.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
-
+        [Authorize]
         public ActionResult SendMessage(MessageViewModel model)
         {
             var userId = HttpContext.User.Identity.GetUserId();
@@ -127,6 +127,43 @@ namespace Appocal.Controllers
             {
                 return RedirectToAction("NewMessageForm", model.ReceiverName);
             }
+        }
+
+
+        public void MessageFromAdmin(string userName, string msg)
+        {
+            string adminName = "AppoCal";
+            Conversation conversation;
+            if (_contex.Conversations.Any(c => (c.User1 == adminName && c.User2 == userName) || (c.User1 == userName && c.User2 == adminName)))
+            {
+                conversation = _contex.Conversations.Include(c => c.Messages).First(c => (c.User1 == adminName && c.User2 == userName) || (c.User1 == userName && c.User2 == adminName));
+                conversation.SeenBy1 = false;
+                conversation.SeenBy2 = false;
+            }
+            else
+            {
+                conversation = new Conversation
+                {
+                    User1 = userName,
+                    User2 = adminName,
+                    SeenBy1 = false,
+                    SeenBy2 = false,
+                    Messages = new List<Message>()
+                };
+                _contex.Users.Include(u => u.MessageBox.Conversations).Single(u => u.UserName == userName).MessageBox.Conversations.Add(conversation);
+                _contex.Users.Include(u => u.MessageBox.Conversations).Single(u => u.UserName == adminName).MessageBox.Conversations.Add(conversation);
+            }
+
+            var message = new Message
+            {
+                Receiver = userName,
+                Sender = adminName,
+                MessageDate = DateTime.Now,
+                Contents = msg
+            };
+
+            conversation.Messages.Add(message);
+            _contex.SaveChanges();
         }
     }
 }

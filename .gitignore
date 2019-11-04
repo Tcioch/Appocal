@@ -14,7 +14,6 @@
 *.userprefs
 
 # Build results
-[Aa]pp_Data/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
@@ -339,4 +338,7 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
-
+App_Data/aspnet-Appocal-20190813093306.mdf
+App_Data/aspnet-Appocal-20190813093306.mdf
+*.ldf
+*.mdf

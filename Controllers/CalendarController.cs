@@ -1,6 +1,7 @@
 ﻿using Appocal.Models;
 using Appocal.Models.HelperModels;
 using Appocal.ViewModels;
+using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Data.Entity;
@@ -94,6 +95,9 @@ namespace Appocal.Controllers
                 businessAppointments.Add(newAppointment);
             }
 
+            new MessageController().MessageFromAdmin(business.Name, $"Użytkownik {HttpContext.User.Identity.Name} umówił nową wizytę. <br> Dzień: {newAppointment.AppointmentDate.ToShortDateString()}<br> Godzina: {newAppointment.AppointmentDate.ToString("HH:mm")}<br> Usługa: {_contex.Services.Single(s => s.Id == appoData.ServiceId).Name}<br>Pamietaj, aby potwierdzić wizytę w swoim kalendarzu.");
+
+
             _contex.Users.Include(u => u.Schedule.Appointments).Single(u => u.Id == userId).Schedule.Appointments.Add(newAppointment);
 
             if (_contex.SaveChanges() > 0)
@@ -115,6 +119,7 @@ namespace Appocal.Controllers
         public ActionResult SaveWorkTime(WorkTimeViewModel WTD)
         {
             var userId = HttpContext.User.Identity.GetUserId();
+            var business = HttpContext.User.Identity.GetUserName();
             Appointment WorkTime = new Appointment();
             WorkTime.AppointmentDate = WTD.AppointmentDate;
             var duration = (WTD.AppointmentEndDate.Hour - WTD.AppointmentDate.Hour) * 60 + WTD.AppointmentEndDate.Minute - WTD.AppointmentDate.Minute;
@@ -129,6 +134,7 @@ namespace Appocal.Controllers
 
             WorkTime.Duration = duration;
             WorkTime.Available = true;
+            WorkTime.Business_Name = business;
 
             user.Business.Schedule.Appointments.Add(WorkTime);
 

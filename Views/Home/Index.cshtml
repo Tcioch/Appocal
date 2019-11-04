@@ -1,31 +1,23 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Otwórz się na innych";
 }
 
 <div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+    <h1>Otwórz się na innych</h1>
+    <p class="lead">
+        W dzisiejszym świecie, klienci lubią mieć wszystko na widoku, bez potrzeby dzwonienia czy pisania aby się umówić. Dzięki nam, teraz im to umożliwisz! <br />
+        Używając naszej aplikacji, bez problemu umówisz z klientami swoje wizyty. Do tego zawsze masz pod ręką informację kto, co i kiedy.
+
+    </p>
+    <p>@Html.ActionLink("Stwórz swój kalendarz", "Register", "Account", new { } ,new { @class = "btn btn-lg btn-primary" })</p>
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
+<div class="jumbotron">
+    <h1>Jesteś klientem?</h1>
+    <p class="lead">
+        Zarejestruj się, aby móc bez ograniczeń korzystać z funkcji naszego serwisu. Wybierz odpowiednią firmę i od razu miej dostęp do wszystkich wolnych terminów. 
+        Nie jesteś pewien, którą firmę wybrać? Zdaj się na recenzję innych. 
+
+    </p>
+    <p>@Html.ActionLink("Zarejestruj nowe konto", "Register", "Account", new { } , new { @class = "btn btn-lg btn-primary" })</p>
 </div>

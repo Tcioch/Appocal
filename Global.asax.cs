@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading;
@@ -22,6 +23,7 @@ namespace Appocal
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("pl-PL");
         }
 
         private static void SetPrincipal(IPrincipal principal)

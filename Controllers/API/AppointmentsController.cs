@@ -25,6 +25,10 @@ namespace Appocal.Controllers.API
             List<Appointment> appointmentsQuery = _contex.Users.Include(u => u.Business.Schedule.Appointments).Single(u => u.Id == userId).Business.Schedule.Appointments;
             appointmentsQuery = appointmentsQuery.Where(a => a.AppointmentDate.ToString("yyyyMMdd") == date).ToList();
             appointmentsQuery = appointmentsQuery.OrderBy(a => a.AppointmentDate).ToList();
+            foreach(var app in appointmentsQuery)
+            {
+                app.Schedule = null;
+            }
             return Ok(appointmentsQuery);
         }
 

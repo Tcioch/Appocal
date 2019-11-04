@@ -41,6 +41,8 @@ namespace Appocal
                      "~/Content/font-awesome/css/all.css",
                      "~/Content/summernote/summernote-bs4.css"
                      ));
+
+            BundleTable.EnableOptimizations = false;
         }
     }
 }

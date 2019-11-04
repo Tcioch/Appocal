@@ -24,6 +24,7 @@ namespace Appocal.Controllers.API
             _contex.Dispose();
         }
 
+        [HttpGet]
         [Authorize(Roles = "Business, Individual")]
         public IHttpActionResult GetDaysInMonthWithAppointments(int month, int year, string businessName = null)
         {

@@ -19,7 +19,7 @@ namespace Appocal.Models
 
 
         public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+            : base("AspServer", throwIfV1Schema: false)
         {
         }
 

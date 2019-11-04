@@ -2,38 +2,42 @@
 @{
     ViewBag.Title = "Usługi";
 }
-<div class="m-4"></div>
-@ViewBag.SuccessMessage
-@Html.ValidationSummary("", new { @class = "text-danger" })
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addNewServiceModal">
-    Dodaj nową usługę
-</button>
-<table class="table table-hover col-6">
-    <thead class="thead-dark">
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Nazwa</th>
-            <th scope="col">Czas trwania</th>
-            <th scope="col">Akcja</th>
-        </tr>
-    </thead>
-    <tbody>
-        @{int i = 0;}
-        @foreach (var service in Model.Services)
-        {
+<div class="col-12 col-md-8 m-auto">
+    @if (ViewBag.SuccessMessage != null)
+    {
+        <div class="alert alert-success m-2">@ViewBag.SuccessMessage</div>
+    }
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    <button type="button" class="btn btn-primary my-2" data-toggle="modal" data-target="#addNewServiceModal">
+        Dodaj nową usługę
+    </button>
+    <table class="table table-hover">
+        <thead class="thead-dark">
             <tr>
-                <th scope="row">@(i + 1)</th>
-                <td>@service.Name</td>
-                <td>@service.Duration</td>
-                <td>
-                    <button class="btn btn-sm btn-warning" title="edytuj" data-toggle="modal" data-target="#editServiceModal_@i"><i class='fas fa-edit'></i></button>
-                    <button class="btn btn-sm btn-danger" title="usuń" data-toggle="modal" data-target="#deleteServiceModal_@i"><i class='fas fa-trash'></i></button>
-                </td>
+                <th scope="col">#</th>
+                <th scope="col">Nazwa</th>
+                <th scope="col">Czas trwania</th>
+                <th scope="col">Akcja</th>
             </tr>
-            i++;
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @{int i = 0;}
+            @foreach (var service in Model.Services)
+            {
+                <tr>
+                    <th scope="row">@(i + 1)</th>
+                    <td>@service.Name</td>
+                    <td>@service.Duration</td>
+                    <td nowrap>
+                        <button class="btn btn-sm btn-warning" title="edytuj" data-toggle="modal" data-target="#editServiceModal_@i"><i class='fas fa-edit'></i></button>
+                        <button class="btn btn-sm btn-danger" title="usuń" data-toggle="modal" data-target="#deleteServiceModal_@i"><i class='fas fa-trash'></i></button>
+                    </td>
+                </tr>
+                i++;
+            }
+        </tbody>
+    </table>
+</div>
 
 <!-- Modals -->
 @for (i = 0; i < Model.Services.Count; i++)
@@ -49,17 +53,17 @@
                 </div>
                 @using (Html.BeginForm("EditService", "BusinessSite"))
                 {
-            <div class="modal-body">
-                <div>
-                    @Html.LabelFor(m => m.Services[i].Name)
-                    <input class="form-control" data-val="true" data-val-required="Pole @Html.NameFor(m => m.Services[i].Name) jest wymagane." id="Services_@i _Name" name="Name" type="text" value="@Model.Services[i].Name"/>
-                </div>
-                <div>
-                    @Html.LabelFor(m => m.Services[i].Duration)
-                    <input class="form-control" data-val="true" data-val-required="Pole @Html.NameFor(m => m.Services[i].Duration) jest wymagane." id="Services_@i _Duration" name="Duration" type="number" min="5" max="1440" step="5" value="@Model.Services[i].Duration"/>
-                </div>
-                <input type="hidden" id="Services_@i _Id" name="Id" value="@Model.Services[i].Id" />
-            </div>
+                    <div class="modal-body">
+                        <div>
+                            @Html.LabelFor(m => m.Services[i].Name)
+                            <input class="form-control" data-val="true" data-val-required="Pole @Html.NameFor(m => m.Services[i].Name) jest wymagane." id="Services_@i _Name" name="Name" type="text" value="@Model.Services[i].Name" />
+                        </div>
+                        <div>
+                            @Html.LabelFor(m => m.Services[i].Duration)
+                            <input class="form-control" data-val="true" data-val-required="Pole @Html.NameFor(m => m.Services[i].Duration) jest wymagane." id="Services_@i _Duration" name="Duration" type="number" min="5" max="1440" step="5" value="@Model.Services[i].Duration" />
+                        </div>
+                        <input type="hidden" id="Services_@i _Id" name="Id" value="@Model.Services[i].Id" />
+                    </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
                         <input type="submit" class="btn btn-warning" value="Zapisz" />
@@ -117,7 +121,7 @@
                     </div>
                     <div>
                         @Html.LabelFor(m => m.NewService.Duration)
-                        @Html.TextBoxFor(m => m.NewService.Duration, new { @class = "form-control", type = "number", min = "5", max = "1440", step = "5"})
+                        @Html.TextBoxFor(m => m.NewService.Duration, new { @class = "form-control", type = "number", min = "5", max = "1440", step = "5" })
                     </div>
                 </div>
                 <div class="modal-footer">

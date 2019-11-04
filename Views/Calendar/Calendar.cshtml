@@ -1,29 +1,31 @@
 ﻿@{
-    ViewBag.Title = "Calendar";
+    ViewBag.Title = "Kalendarz";
 }
+<div class="col-10 m-auto">
 
-<h2>Calendar</h2>
-@Html.ActionLink("Dodaj nowy czas pracy", "AddNewTime", "Calendar", null, new { @class = "btn btn-primary ml-3" })
+    <h3>Kalendarz</h3>
+    @Html.ActionLink("Dodaj nowy czas pracy", "AddNewTime", "Calendar", null, new { @class = "btn btn-primary my-2" })
 
-<div id="calendar" class="col-6 mt-2">
-</div>
-<div>
-    <table id="appoTable" class="table table-hover" hidden>
-        <thead class="thead-dark">
-            <tr>
-                <th>Data</th>
-                <th>Start</th>
-                <th>Czas trwania</th>
-                <th>Koniec</th>
-                <th>Usługa</th>
-                <th>Klient</th>
-                <th>Status</th>
-                <th>Akcja</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div id="calendar" class=" col-md-10 m-auto">
+    </div>
+    <div>
+        <table id="appoTable" class="table table-hover m-auto" hidden>
+            <thead class="thead-dark">
+                <tr>
+                    <th>Data</th>
+                    <th>Start</th>
+                    <th>Czas trwania</th>
+                    <th>Koniec</th>
+                    <th>Usługa</th>
+                    <th>Klient</th>
+                    <th>Status</th>
+                    <th>Akcja</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 @section Scripts {

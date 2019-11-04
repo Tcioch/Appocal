@@ -4,15 +4,14 @@
     ViewBag.Title = "Dodaj recenzje";
 }
 
-<h2>Dodaj recenzje dla @Model.BusinessName</h2>
 
 @using (Html.BeginForm("AddReview", "BusinessSite"))
 {
     @Html.ValidationSummary("", new { @class = "text-danger" })
-    <div class="container">
+    <div class="col-12 col-md-8 col-lg-6 m-auto">
+<h3>Dodaj recenzje dla @Model.BusinessName</h3>
         <div>
             <label>Ocena:</label>
-            <div class="col-sm-6">
                 @{
 
                     var listItems = new List<SelectListItem>()
@@ -29,18 +28,15 @@
                         };
                 }
                 @Html.DropDownListFor(m => m.Rating, listItems, new { @class = "form-control" })
-            </div>
         </div>
         <div>
-            <label>Recenzja</label>
-            <div class="col-sm-6">
+            <label>Recenzja:</label>
                 @Html.TextAreaFor(m => m.Review, 5, 1, new { @class = "form-control" })
-            </div>
         </div>
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10 mt-3">
+            <div class="text-center w-100">
                 @Html.HiddenFor(m => m.BusinessName)
-                <input type="submit" class="btn btn-primary" value="Dodaj" />
+                <input type="submit" class="btn btn-primary mt-2" value="Dodaj" />
             </div>
         </div>
     </div>
